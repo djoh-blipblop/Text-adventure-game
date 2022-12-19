@@ -1,10 +1,52 @@
 ﻿using System.Text.RegularExpressions;
 
+enum LocationId
+{
+    Nowhere,
+    Inventory,
+    Entrance,
+    OrderStation,
+    EatingArea,
+    Bathroom,
+    FoodDeliveryStation,
+    Kitchen,
+    Freezer,
+    WasteProcessing,
+    Storage,
+    CleanBotBay,
+    ShippingBay,
+    ServerRoom,
+}
+
 internal class Program
 {
-    const ConsoleColor NarrativeColor = ConsoleColor.Gray;
+    const ConsoleColor NarrativeColor = ConsoleColor.Green;
     const ConsoleColor PromptColor = ConsoleColor.White;
-    const int PrintPauseMilliseconds = 500;
+    const ConsoleColor PlayerColor = ConsoleColor.DarkGray;
+    const int PrintPauseMilliseconds = 800;
+
+    class LocationData
+    {
+        public LocationId Id;
+        public string Name;
+        public string Description;
+    }
+
+    // Data dictionaries
+    static Dictionary<LocationId, LocationData> locationsDataDictionary =
+        new Dictionary<LocationId, LocationData>();
+
+    // Current state
+    static LocationId CurrentLocationId = LocationId.Entrance;
+
+    static void DisplayLocation()
+    {
+        Console.Clear();
+
+        // Display current location description.
+        LocationData currentLocationData = locationsDataDictionary[CurrentLocationId];
+        Print(currentLocationData.Description);
+    }
 
     static void Print(string text)
     {
@@ -25,95 +67,109 @@ internal class Program
     static void HandlePlayerAction()
     {
         // Ask the player what they want to do.
+        Console.ForegroundColor = PromptColor;
         Print("What now?");
         Print("");
-
-        Console.ForegroundColor = PromptColor;
         Console.Write("> ");
 
-        string command = Console.ReadLine().ToLowerInvariant();
+        Console.ForegroundColor = PlayerColor;
+        string? commandInput = Console.ReadLine();
 
-        // Analyze the command by assuming the first word is a verb (or similar instruction).
-        string[] words = command.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        string verb = words[0];
-
-        // Call the appropriate handler for the given verb.
-        switch (verb)
+        if (commandInput != null)
         {
-            case "north":
-            case "n":
-                // TODO
-                break;
+            // Analyze the command by assuming the first word is a verb (or similar instruction).
+            string[] words = commandInput.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            case "south":
-            case "s":
-                // TODO
-                break;
+            string verb = words[0];
 
-            case "east":
-            case "e":
-                // TODO
-                break;
+            // Call the appropriate handler for the given verb.
+            switch (verb)
+            {
+                case "north":
+                case "n":
+                    // TODO
+                    break;
 
-            case "west":
-            case "w":
-                // TODO
-                break;
+                case "south":
+                case "s":
+                    // TODO
+                    break;
 
-            case "enter":
-            case "climb in":
-                // TODO
-                break;
+                case "east":
+                case "e":
+                    // TODO
+                    break;
 
-            case "inventory":
-            case "inv":
-                // TO DO 
-                break;
+                case "west":
+                case "w":
+                    // TODO
+                    break;
 
-            case "inspect":
-                // TO DO
-                break;
+                case "enter":
+                case "climb in":
+                    // TODO
+                    break;
 
-            case "get":
-                // TO DO
-                break;
+                case "inventory":
+                case "inv":
+                    // TO DO 
+                    break;
 
-            case "use":
-                // to do
-                break;
+                case "inspect":
+                    // TO DO
+                    break;
 
-            case "combine":
-                // to do
-                break;
+                case "get":
+                    // TO DO
+                    break;
 
-            case "talk":
-                // to do
-                break;
+                case "use":
+                    // to do
+                    break;
 
-            case "help":
-                // to do
-                break;
+                case "combine":
+                    // to do
+                    break;
 
-            case "quit":
-            case "exit":
-                Print("Goodbye!");
-                shouldQuit = true;
-                break;
+                case "talk":
+                    // to do
+                    break;
 
-            default:
-                Print("I do not understand you.");
-                break;
+                case "help":
+                    // to do
+                    break;
+
+                case "quit":
+                case "exit":
+                    Print("Goodbye!");
+                    shouldQuit = true;
+                    break;
+
+                default:
+                    Print("I do not understand you.");
+                    break;
+            }
         }
-
-
-
+        else
+        {
+            return;
+        }
     }
 
     private static void Main(string[] args)
     {
-        // Display title screen
+        //initalize data
+        string[] locationIdText = File.ReadAllLines("LocationData.txt");
+        for (int i = 0; i < locationIdText.Length; i++)
+        {
+            if (Enum.TryParse<LocationId>(locationIdText[i], false, out LocationId result))
+            {
+                LocationData locationData = new LocationData() { Id = result, Name = locationIdText[i + 1].Substring(6), Description = locationIdText[i + 2].Substring(13) };
+                locationsDataDictionary.Add(result, locationData);
+            }
+        }
 
+        // Display title screen
         string title = File.ReadAllText("Title.txt");
         Console.WriteLine(title);
         Console.ReadKey();
@@ -121,8 +177,11 @@ internal class Program
 
         // Display intro.
         Console.ForegroundColor = NarrativeColor;
+        Print("This is the placeholder for the intro");
 
-        Print("Lets just seeeeee if this works and then also while we're at it test what happens if the text is very long, like if this was one of those stream of consciouesness narrative ideas that you get in books some times, like postmodern novel and such. speaking of which i really gotta read house of leaves, maybe i can get the english version from the public library in tingsryd. I dont think you can translate such a novel to swedsish werer the form of hte letters and workds are importnant,. i am making a lot of spelling misstakes here, its on purpouse i swear. i know langauge good. me spek good. ");
+        //Game start
+        DisplayLocation();
+
         while (shouldQuit == false)
         {
             HandlePlayerAction();
