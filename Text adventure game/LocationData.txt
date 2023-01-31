@@ -9,50 +9,88 @@ Description: In your inventory currently is:
 Entrance
 Name: Entrance
 Description: You find yourself at the entrance of the resturant. Right now only you are here. To the north in the room is a order interface. The screen glows faintly. To the west are some tables and chairs, an area to sit down and eat. To the south is the entrance and exit doors. 
+Directions:
+	North: OrderStation
 
 OrderStation
 Name: Order station
 Description: The screen lights up as you aproach the order station. A interface is shown on the display. Behind it to the north you see a food delivery station and some closed doors.
+Directions:
+	West: EatingArea
+	North: FoodDeliveryStation
 
 EatingArea
 Name: Eating area
 Description: A few tables and chairs are spread out in the room. To the south is a sign that says "Bathroom". To the west is the order station.
+Directions:
+	East: OrderStation
+	South: BathRoom
 
 BathRoom
 Name: Bathroom
 Description: The bathroom is clean and neat. There is a toilet and a sink on the wall, with a mirror above the sink. On the opposite wall is a quite large air vent cover, with a faint humming noise emitting from it. The cover looks a bit loose. 
+Directions:
+	North: EatingArea
+	Vent: WasteProcessing
 
 FoodDeliveryStation
 Name: Food delivery station
 Description: This is where the food is delivered if you order something. Through the small hatch you can see a tray, and a robotic arm. It probably puts food on the tray, but it's currently idle. The doors that lead north is on the side of the hatch. They look heavy.
+Directions:
+	North: Kitchen
+	South: OrderStation
 
 Kitchen
 Name: Kitchen
 Description: You enter the Kitchen. Hanging down from the ceiling are at least 7 different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading east is labled "Waste processing". A door leading west is labled "Freezer". A door leading further north is labled "Storage".
+Directions:
+	West: WasteProcessing
+	North: Storage
+	East: Freezer
+	South: FoodDeliveryStation
 
 Freezer
 Name: Freezer
 Description: You enter the freezer. In boxes around the shelves are hamburgers, fries and bread. Various other boxes must contain more food items you figure. It's cold. On the north wall is an air vent, its sucking cool air out. It looks sturdy. There are quite a lot of ice in here, it must have been a long time since the freezer was defrosted.
+Directions:
+	West: Kitchen
+	Vent: ServerRoom
 
 WasteProcessing
 Name: Waste Processing
 Description: You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machinery stations a littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the western wall is an air vent cover. Its emitting a faint noise.
+Directions:
+	North: ShippingBay
+	East: Kitchen
+	Vent: Bathroom
 
 Storage
 Name: Storage
 Description: You've entered the storage room of the resturant. A lot of boxes are here, on shelves and stacked on the ground. Reading some of the labels you find reciept paper, spices and other various items are stored here. On a door to the west is a small card reader. It's blinking. The label over the door says "Shipping bay". On the door leading north there is a sign labled "CleanBot™ Bay". The door leading east is labeled "Data Center". The door leading south says "Kitchen".
+Directions:
+	North: CleanBotBay
+	South: Kitchen
+	West: ShippingBay
+	East: ServerRoom
 
 CleanBotBay
 Name: CleanBot bay
 Description: A small room covered in wires and cables. There is a large machine here, with tanks connected to it. The tanks are labeled "Surfactants", "Disinfection", "Solvents", "Enzymes" and "Fragrances". This must be where the Cleaning robot charges and gets refilled with chemicals. A door leads south back into the storage.
+Directions:
+	South: Storage
 
 ShippingBay
 Name: Shipping Bay
 Description: Here is the Shipping bay. A brisk wind is coming in trough the roll down covers leading outside. There are two loading/unloading stations here, as well as a offline drone laying on the floor. This must be where the goods are delivered to the resturant you think to yourself. A door leading west is labeled "Storage". A door leading south has a small card reader next to it. It's blinking. The door is labeled "Waste processing"
+Directions:
+	East: Storage
+	South: WasteProcessing
 
 ServerRoom
 Name: Server Room
 Description: Racks of computer hardware are spread about the room here. Even though there is cold air coming in from a air vent on the south wall the room is very warm. Several racks have bulbous rounded computer parts attached to them. One is blinking green steadily, while the others are flashing red at various intervals. A small screen is glowing on one of the walls of the room.
-
+Directions:
+	West: Storage
+	Vent: Freezer
 
   

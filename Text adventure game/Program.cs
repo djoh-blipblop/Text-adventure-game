@@ -18,6 +18,15 @@ enum LocationId
     ServerRoom,
 }
 
+enum Direction
+{
+    North,
+    South,
+    West,
+    East,
+    Vent,
+}
+
 internal class Program
 {
     const ConsoleColor NarrativeColor = ConsoleColor.Green;
@@ -28,8 +37,9 @@ internal class Program
     class LocationData
     {
         public LocationId Id;
-        public string Name;
-        public string Description;
+        public string? Name;
+        public string? Description;
+        public Dictionary<Direction, LocationId>? Directions;
     }
 
     // Data dictionaries
@@ -168,6 +178,7 @@ internal class Program
                 locationsDataDictionary.Add(result, locationData);
             }
         }
+
 
         // Display title screen
         string title = File.ReadAllText("Title.txt");
