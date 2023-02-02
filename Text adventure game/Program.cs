@@ -90,7 +90,7 @@ internal class Program
     {
         //TODO uncomment this for play build, and decide if you want to display the location name or only the description
         //Console.Clear();
-
+        Console.ForegroundColor = NarrativeColor;
         // Display current location description.
         // LocationData currentLocationData = locationsData[CurrentLocationId];
 
@@ -396,17 +396,17 @@ internal class Program
         // Display intro.
         Console.ForegroundColor = NarrativeColor;
         Print("This is the placeholder for the intro");
+        // TODO, uncomment this for playable build
+        //Console.ReadKey();
+        //Console.Clear();
 
         //Game start
-        LocationData currentLocation = InitLocation();
-        //DisplayLocation(currentLocation);
-
-        CreateUserInterface(currentLocation);
+        //LocationData currentLocation = InitLocation();
+        //CreateUserInterface(currentLocation);
 
         while (shouldQuit == false)
         {
-            HandlePlayerAction(currentLocation);
-            DisplayLocation(currentLocation);
+            CreateUserInterface(currentLocation);
         }
     }
 }
