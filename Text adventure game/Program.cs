@@ -7,7 +7,7 @@ enum LocationId
     Entrance,
     OrderStation,
     EatingArea,
-    Bathroom,
+    BathRoom,
     FoodDeliveryStation,
     Kitchen,
     Freezer,
@@ -39,23 +39,55 @@ internal class Program
         public LocationId Id;
         public string? Name;
         public string? Description;
+        public Dictionary<Direction, LocationId>? Directions =
+            new Dictionary<Direction, LocationId>();
+
+    }
+    class ParsedData
+    {
+        public string? Id;
+        public string? Name;
+        public string? Description;
         public Dictionary<Direction, LocationId>? Directions;
+        public LocationId StartingLocationId;
     }
 
     // Data dictionaries
-    static Dictionary<LocationId, LocationData> locationsDataDictionary =
+    static Dictionary<LocationId, LocationData> locationsData =
         new Dictionary<LocationId, LocationData>();
+
+
 
     // Current state
     static LocationId CurrentLocationId = LocationId.Entrance;
 
-    static void DisplayLocation()
+    static LocationData InitLocation()
     {
-        Console.Clear();
+        LocationData currentLocationData = locationsData[CurrentLocationId];
+        return currentLocationData;
+    }
+
+    static void DisplayLocation(LocationData currentLocation)
+    {
+        //Console.Clear();
 
         // Display current location description.
-        LocationData currentLocationData = locationsDataDictionary[CurrentLocationId];
-        Print(currentLocationData.Description);
+        //LocationData currentLocationData = locationsData[CurrentLocationId];
+
+        Print(currentLocation.Name);
+        Print(currentLocation.Description);
+    }
+
+    static LocationData switchLocation(LocationId currentLocationId)
+    {
+        LocationData destinationLocation = locationsData[currentLocationId];
+        return destinationLocation;
+    }
+
+    static LocationData generateLocationData()
+    {
+        LocationData currentLocationData = locationsData[CurrentLocationId];
+        return currentLocationData;
     }
 
     static void Print(string text)
@@ -74,18 +106,33 @@ internal class Program
     }
 
     static bool shouldQuit = false;
-    static void HandlePlayerAction()
+
+    // Create an UI for the user
+    static void CreateUserInterface(LocationData currentLocation)
+    {
+        DisplayLocation(currentLocation);
+        HandlePlayerAction(currentLocation);
+    }
+
+    // Bundle all the prompt styling and handling, return the user input as a string
+    static string Prompt()
     {
         // Ask the player what they want to do.
         Console.ForegroundColor = PromptColor;
         Print("What now?");
         Print("");
+
         Console.Write("> ");
 
         Console.ForegroundColor = PlayerColor;
         string? commandInput = Console.ReadLine();
+        return commandInput;
+    }
+    static void HandlePlayerAction(LocationData currentLocation)
+    {
+        string? commandInput = Prompt();
 
-        if (commandInput != null)
+        if (commandInput != "")
         {
             // Analyze the command by assuming the first word is a verb (or similar instruction).
             string[] words = commandInput.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -97,12 +144,20 @@ internal class Program
             {
                 case "north":
                 case "n":
-                    // TODO
+                    if (currentLocation.Directions.ContainsKey(Direction.North))
+                    {
+                        currentLocation = switchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
+                        CreateUserInterface(currentLocation);
+                    }
                     break;
 
                 case "south":
                 case "s":
-                    // TODO
+                    if (currentLocation.Directions.ContainsKey(Direction.South))
+                    {
+                        currentLocation = switchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
+                        CreateUserInterface(currentLocation);
+                    }
                     break;
 
                 case "east":
@@ -122,7 +177,9 @@ internal class Program
 
                 case "inventory":
                 case "inv":
-                    // TO DO 
+                    // TODO
+                    // e.g. you could implement a function, which handles the inventory stuff. For example display the inventory, you invoke it,
+                    // and after that you would call CreateUserInterface again.
                     break;
 
                 case "inspect":
@@ -162,21 +219,121 @@ internal class Program
         }
         else
         {
-            return;
+            // view prompt when no user input has been given, e.g. Only Enter has been pressed
+            HandlePlayerAction(currentLocation);
         }
     }
 
     private static void Main(string[] args)
     {
-        //initalize data
-        string[] locationIdText = File.ReadAllLines("LocationData.txt");
-        for (int i = 0; i < locationIdText.Length; i++)
+        //Initalizing
+
+        ReadLocationsData();
+
+        static void ReadLocationsData()
         {
-            if (Enum.TryParse<LocationId>(locationIdText[i], false, out LocationId result))
+            // Parse the locations file.
+            List<ParsedData> parsedDataList = ParseData("LocationData.txt");
+
+            // Transfer data from the parsed structures into locations data.
+            foreach (ParsedData parsedData in parsedDataList)
             {
-                LocationData locationData = new LocationData() { Id = result, Name = locationIdText[i + 1].Substring(6), Description = locationIdText[i + 2].Substring(13) };
-                locationsDataDictionary.Add(result, locationData);
+                LocationId locationId = Enum.Parse<LocationId>(parsedData.Id);
+                LocationData locationData = new LocationData
+                {
+                    Id = locationId,
+                    Name = parsedData.Name,
+                    Description = parsedData.Description,
+                    Directions = parsedData.Directions
+                };
+                locationsData[locationId] = locationData;
             }
+        }
+
+        static List<ParsedData> ParseData(string filePath)
+        {
+            var parsedDataList = new List<ParsedData>();
+
+            string[] dataLines = File.ReadAllLines(filePath);
+            var currentLineIndex = 0;
+
+            // Parse data until we reach the end.
+            while (currentLineIndex < dataLines.Length)
+            {
+                // First line of data holds the ID string.
+                string id = dataLines[currentLineIndex];
+
+                // Initialize the structure that will hold parsed data.
+                var parsedData = new ParsedData
+                {
+                    Id = id,
+                    Directions = new Dictionary<Direction, LocationId>()
+                };
+
+                // The remaining lines hold various properties in "property: value" or "property:" format.
+                currentLineIndex++;
+
+                do
+                {
+                    // Extract property and potentially value.
+                    MatchCollection matches = Regex.Matches(dataLines[currentLineIndex], @"(\w+): *(.*)?");
+
+
+                    if (matches.Count == 0)
+                    {
+                        throw new FormatException("Invalid property line: " + dataLines[currentLineIndex]);
+                    }
+
+                    string property = matches[0].Groups[1].Value;
+                    string value = matches[0].Groups[2]?.Value;
+
+                    // Store value into data structure.
+                    switch (property)
+                    {
+                        case "Name":
+                            parsedData.Name = value;
+                            break;
+
+                        case "Description":
+                            parsedData.Description = value;
+                            break;
+
+                        case "Directions":
+                            // Directions are listed in separate lines with format "  direction: destination".
+                            do
+                            {
+                                // Continue while the next line is a directions line.
+                                MatchCollection directionsLineMatches = Regex.Matches(dataLines[currentLineIndex + 1], @"[\t]+(\w+): *(.*)");
+
+
+                                if (directionsLineMatches.Count == 0) break;
+
+                                // Store parsed data into the directions dictionary.
+                                Direction direction = Enum.Parse<Direction>(directionsLineMatches[0].Groups[1].Value);
+                                LocationId destination = Enum.Parse<LocationId>(directionsLineMatches[0].Groups[2].Value);
+                                parsedData.Directions[direction] = destination;
+
+                                currentLineIndex++;
+
+                            } while (currentLineIndex + 1 < dataLines.Length);
+                            break;
+
+                        case "StartingLocation":
+                            parsedData.StartingLocationId = Enum.Parse<LocationId>(value);
+                            break;
+                    }
+
+                    currentLineIndex++;
+
+                    // Keep parsing until we reach an empty line, which signifies the end of the current entry.
+                } while (currentLineIndex < dataLines.Length && dataLines[currentLineIndex].Length > 0);
+
+                // All data for this entry was parsed. Store it and skip the next empty line.
+                parsedDataList.Add(parsedData);
+                currentLineIndex++;
+            }
+
+            return parsedDataList;
         }
 
 
@@ -191,11 +348,16 @@ internal class Program
         Print("This is the placeholder for the intro");
 
         //Game start
-        DisplayLocation();
+        LocationData currentLocation = InitLocation();
+        //DisplayLocation(currentLocation);
 
-        while (shouldQuit == false)
+        CreateUserInterface(currentLocation);
+
+        // TODO rethink this control flow
+        /*while (shouldQuit == false)
         {
-            HandlePlayerAction();
-        }
+            HandlePlayerAction(currentLocation);
+            DisplayLocation(currentLocation);
+        }*/
     }
 }

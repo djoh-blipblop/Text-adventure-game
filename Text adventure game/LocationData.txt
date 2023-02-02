@@ -16,15 +16,16 @@ OrderStation
 Name: Order station
 Description: The screen lights up as you aproach the order station. A interface is shown on the display. Behind it to the north you see a food delivery station and some closed doors.
 Directions:
-	West: EatingArea
 	North: FoodDeliveryStation
+	South: Entrance
+	West: EatingArea
 
 EatingArea
 Name: Eating area
 Description: A few tables and chairs are spread out in the room. To the south is a sign that says "Bathroom". To the west is the order station.
 Directions:
-	East: OrderStation
 	South: BathRoom
+	East: OrderStation
 
 BathRoom
 Name: Bathroom
@@ -44,10 +45,10 @@ Kitchen
 Name: Kitchen
 Description: You enter the Kitchen. Hanging down from the ceiling are at least 7 different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading east is labled "Waste processing". A door leading west is labled "Freezer". A door leading further north is labled "Storage".
 Directions:
-	West: WasteProcessing
 	North: Storage
-	East: Freezer
 	South: FoodDeliveryStation
+	East: Freezer
+	West: WasteProcessing
 
 Freezer
 Name: Freezer
@@ -62,7 +63,7 @@ Description: You enter the Waste processing unit of the resturant. There is a ha
 Directions:
 	North: ShippingBay
 	East: Kitchen
-	Vent: Bathroom
+	Vent: BathRoom
 
 Storage
 Name: Storage
@@ -70,8 +71,8 @@ Description: You've entered the storage room of the resturant. A lot of boxes ar
 Directions:
 	North: CleanBotBay
 	South: Kitchen
-	West: ShippingBay
 	East: ServerRoom
+	West: ShippingBay
 
 CleanBotBay
 Name: CleanBot bay
@@ -83,8 +84,8 @@ ShippingBay
 Name: Shipping Bay
 Description: Here is the Shipping bay. A brisk wind is coming in trough the roll down covers leading outside. There are two loading/unloading stations here, as well as a offline drone laying on the floor. This must be where the goods are delivered to the resturant you think to yourself. A door leading west is labeled "Storage". A door leading south has a small card reader next to it. It's blinking. The door is labeled "Waste processing"
 Directions:
-	East: Storage
 	South: WasteProcessing
+	East: Storage
 
 ServerRoom
 Name: Server Room
@@ -92,5 +93,3 @@ Description: Racks of computer hardware are spread about the room here. Even tho
 Directions:
 	West: Storage
 	Vent: Freezer
-
-  
