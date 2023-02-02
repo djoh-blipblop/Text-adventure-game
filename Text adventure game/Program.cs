@@ -27,11 +27,30 @@ enum Direction
     Vent,
 }
 
+enum Items
+{
+    KeyCard,
+    MultiTool,
+    Hamburger,
+    Ice,
+    Chlorine,
+    DroneBattery,
+    MixedExplosive,
+    AICore,
+}
+
+enum NPCs
+{
+    CleanBot,
+    FRED,
+    OMAR,
+}
 internal class Program
 {
     const ConsoleColor NarrativeColor = ConsoleColor.Green;
     const ConsoleColor PromptColor = ConsoleColor.White;
     const ConsoleColor PlayerColor = ConsoleColor.DarkGray;
+    const ConsoleColor HelpColor = ConsoleColor.Red;
     const int PrintPauseMilliseconds = 800;
 
     class LocationData
@@ -69,22 +88,36 @@ internal class Program
 
     static void DisplayLocation(LocationData currentLocation)
     {
+        //TODO uncomment this for play build, and decide if you want to display the location name or only the description
         //Console.Clear();
 
         // Display current location description.
-        //LocationData currentLocationData = locationsData[CurrentLocationId];
+        // LocationData currentLocationData = locationsData[CurrentLocationId];
 
         Print(currentLocation.Name);
         Print(currentLocation.Description);
     }
 
-    static LocationData switchLocation(LocationId currentLocationId)
+    static void DisplayHelp()
+    {
+        Console.ForegroundColor = HelpColor;
+        Print("HELP");
+        Print("You can try moving in a direction by entering the direction (NORTH, SOUTH, EAST or WEST");
+        Print("Some things you might be able to TALK to");
+        Print("You can also check out whats in your INVENTORY");
+        Print("INSPECT lets you take a closer look at objects");
+        Print("GET lets you take items with you");
+        Print("USE is the command for using an item from your inventory at a location");
+        Print("You can also COMBINE items that you have in your inventory");
+        Print("QUIT lets you exit the game");
+    }
+    static LocationData SwitchLocation(LocationId currentLocationId)
     {
         LocationData destinationLocation = locationsData[currentLocationId];
         return destinationLocation;
     }
 
-    static LocationData generateLocationData()
+    static LocationData GenerateLocationData()
     {
         LocationData currentLocationData = locationsData[CurrentLocationId];
         return currentLocationData;
@@ -101,7 +134,8 @@ internal class Program
         foreach (Match match in lineMatches)
         {
             Console.WriteLine(match.Groups[0].Value);
-            Thread.Sleep(PrintPauseMilliseconds);
+            //Thread.Sleep(PrintPauseMilliseconds); 
+            //TODO uncomment for play build
         }
     }
 
@@ -146,7 +180,7 @@ internal class Program
                 case "n":
                     if (currentLocation.Directions.ContainsKey(Direction.North))
                     {
-                        currentLocation = switchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
+                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
                         CreateUserInterface(currentLocation);
                     }
                     break;
@@ -155,24 +189,37 @@ internal class Program
                 case "s":
                     if (currentLocation.Directions.ContainsKey(Direction.South))
                     {
-                        currentLocation = switchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
+                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
                         CreateUserInterface(currentLocation);
                     }
                     break;
 
                 case "east":
                 case "e":
-                    // TODO
+                    if (currentLocation.Directions.ContainsKey(Direction.East))
+                    {
+                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.East));
+                        CreateUserInterface(currentLocation);
+                    }
                     break;
 
                 case "west":
                 case "w":
-                    // TODO
+                    if (currentLocation.Directions.ContainsKey(Direction.West))
+                    {
+                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.West));
+                        CreateUserInterface(currentLocation);
+                    }
                     break;
 
                 case "enter":
                 case "climb in":
-                    // TODO
+                case "vent":
+                    if (currentLocation.Directions.ContainsKey(Direction.Vent))
+                    {
+                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.Vent));
+                        CreateUserInterface(currentLocation);
+                    }
                     break;
 
                 case "inventory":
@@ -203,7 +250,10 @@ internal class Program
                     break;
 
                 case "help":
-                    // to do
+                    DisplayHelp();
+                    Console.ReadLine();
+                    Console.Clear();
+                    CreateUserInterface(currentLocation);
                     break;
 
                 case "quit":
@@ -353,11 +403,10 @@ internal class Program
 
         CreateUserInterface(currentLocation);
 
-        // TODO rethink this control flow
-        /*while (shouldQuit == false)
+        while (shouldQuit == false)
         {
             HandlePlayerAction(currentLocation);
             DisplayLocation(currentLocation);
-        }*/
+        }
     }
 }

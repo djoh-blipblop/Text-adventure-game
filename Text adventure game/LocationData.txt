@@ -8,13 +8,13 @@ Description: In your inventory currently is:
 
 Entrance
 Name: Entrance
-Description: You find yourself at the entrance of the resturant. Right now only you are here. To the north in the room is a order interface. The screen glows faintly. To the west are some tables and chairs, an area to sit down and eat. To the south is the entrance and exit doors. 
+Description: You find yourself at the entrance of the resturant. Right now only you are here. To the north in the room is a order interface. The screen glows faintly.  
 Directions:
 	North: OrderStation
 
 OrderStation
 Name: Order station
-Description: The screen lights up as you aproach the order station. A interface is shown on the display. Behind it to the north you see a food delivery station and some closed doors.
+Description: The screen lights up as you aproach the order station. A interface is shown on the display. Behind it to the north you see a food delivery station and some closed doors. To the West are some tables and chairs to sit down at. To the South are the entrance and exit doors.
 Directions:
 	North: FoodDeliveryStation
 	South: Entrance
@@ -22,7 +22,7 @@ Directions:
 
 EatingArea
 Name: Eating area
-Description: A few tables and chairs are spread out in the room. To the south is a sign that says "Bathroom". To the west is the order station.
+Description: A few tables and chairs are spread out in the room. To the south is a sign that says "Bathroom". To the east is the order station.
 Directions:
 	South: BathRoom
 	East: OrderStation
@@ -43,7 +43,7 @@ Directions:
 
 Kitchen
 Name: Kitchen
-Description: You enter the Kitchen. Hanging down from the ceiling are at least 7 different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading east is labled "Waste processing". A door leading west is labled "Freezer". A door leading further north is labled "Storage".
+Description: You enter the Kitchen. Hanging down from the ceiling are at least 7 different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading west is labled "Waste processing". A door leading east is labled "Freezer". A door leading further north is labled "Storage".
 Directions:
 	North: Storage
 	South: FoodDeliveryStation
@@ -59,7 +59,7 @@ Directions:
 
 WasteProcessing
 Name: Waste Processing
-Description: You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machinery stations a littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the western wall is an air vent cover. Its emitting a faint noise.
+Description: You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the western wall is an air vent cover. Its emitting a faint noise.
 Directions:
 	North: ShippingBay
 	East: Kitchen
@@ -67,7 +67,7 @@ Directions:
 
 Storage
 Name: Storage
-Description: You've entered the storage room of the resturant. A lot of boxes are here, on shelves and stacked on the ground. Reading some of the labels you find reciept paper, spices and other various items are stored here. On a door to the west is a small card reader. It's blinking. The label over the door says "Shipping bay". On the door leading north there is a sign labled "CleanBot™ Bay". The door leading east is labeled "Data Center". The door leading south says "Kitchen".
+Description: You've entered the storage room of the resturant. A lot of boxes are here, on shelves and stacked on the ground. Reading some of the labels you find reciept paper, spices and other various items are stored here. On a door to the west is a small card reader. It's blinking. The label over the door says "Shipping bay". On the door leading north there is a sign labled "CleanBot(TM) Bay". The door leading east is labeled "Data Center". The door leading south says "Kitchen".
 Directions:
 	North: CleanBotBay
 	South: Kitchen
