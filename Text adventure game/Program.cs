@@ -144,13 +144,6 @@ internal class Program
 
     static bool shouldQuit = false;
 
-    // Create an UI for the user
-    /*static void DisplayUserInterface(LocationData currentLocation)
-    {
-        DisplayLocation(currentLocation);
-        HandlePlayerAction(currentLocation);
-    }*/
-
     // Bundle all the prompt styling and handling, return the user input as a string
     static string Prompt()
     {

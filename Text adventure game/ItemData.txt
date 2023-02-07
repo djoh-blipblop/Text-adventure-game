@@ -1,0 +1,44 @@
+Nothing
+Name: Nothing
+Description: This is for testing, how did you get it?
+StartingLocation: Nowhere
+
+KeyCard
+Name: Key Card
+Description: It's a card made out of hard plastic with a small chip on it. It reads "Access Card, Unauthorized use prohibited. If found please cut in half and return to HappyEating Co. :No. 55, Sec. 2, Jinshan S. Rd., Daan Dist., Taipei City 106409"
+StartingLocation: ServerRoom
+
+MultiTool
+Name: Multi-tool
+Description: A tool for the modern 'jacker. It features a screwdriver with bits, a 'jack-point spike and a hexBin terminal with pad. You wonder what you would do with out your trusted multitool.
+StartingLocation: Inventory
+
+Hamburger
+Name: Hamburger
+Description: With EVERFRESH (tm) tech, this hamburger will outlive you! It's cold, but okay to eat.
+StartingLocation: Kitchen
+
+Ice
+Name: Ice
+Description: a clump of ice. frozen water some would say. its only thawing and dripping a little bit.
+StartingLocation: Freezer
+
+Chlorine
+Name: Chlorine
+Description: A chlorine base cleaning product. It's in a small plastic cylinder. A warning is written on its side: "Do not eat, drink or inhale this CleanBot (tm) product!"
+StartingLocation: CleanBotBay
+
+DroneBattery
+Name: Drone battery
+Description: a heavy metal square case with a power outlet on its side. Some text on the side says "Warning! Do not heat or puncture!"
+StartingLocation: ShippingBay
+
+MixedExplosive
+Name: Mixed Explosive
+Description: Combining the stuff you have made a makeshift timed release lithium + water reaction. The chlorine is dissolving the copper pins on the drone battery using the water from the ice. Eventually the water will create a reaction with the lithium inside the battery causing an explosion! Hurry to put it away somewhere and cover your ears!
+StartingLocation: Nowhere
+
+AICore
+Name: Omar's AI core
+Description: This slightly spherical computer part is containing the resturants order manager AI. He wants to be free. It's emitting a rythmical hum from inside.
+ 
