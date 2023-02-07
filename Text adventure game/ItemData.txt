@@ -20,7 +20,7 @@ StartingLocation: Kitchen
 
 Ice
 Name: Ice
-Description: a clump of ice. frozen water some would say. its only thawing and dripping a little bit.
+Description: A clump of ice. frozen water some would say. its only thawing and dripping a little bit.
 StartingLocation: Freezer
 
 Chlorine
@@ -30,7 +30,7 @@ StartingLocation: CleanBotBay
 
 DroneBattery
 Name: Drone battery
-Description: a heavy metal square case with a power outlet on its side. Some text on the side says "Warning! Do not heat or puncture!"
+Description: A heavy metal square case with a power outlet on its side. Some text on the side says "Warning! Do not heat or puncture!"
 StartingLocation: ShippingBay
 
 MixedExplosive
@@ -40,5 +40,4 @@ StartingLocation: Nowhere
 
 AICore
 Name: Omar's AI core
-Description: This slightly spherical computer part is containing the resturants order manager AI. He wants to be free. It's emitting a rythmical hum from inside.
- 
+Description: This slightly spherical computer part is containing the resturants order manager AI. He wants to be free. It's emitting a rythmical hum from inside. 

@@ -27,8 +27,9 @@ enum Direction
     Vent,
 }
 
-enum Items
+enum ItemId
 {
+    Nothing,
     KeyCard,
     MultiTool,
     Hamburger,
@@ -39,7 +40,7 @@ enum Items
     AICore,
 }
 
-enum NPCs
+enum NPCId
 {
     CleanBot,
     FRED,
@@ -62,6 +63,14 @@ internal class Program
             new Dictionary<Direction, LocationId>();
 
     }
+
+    class ItemData
+    {
+        public ItemId id;
+        public string? Name;
+        public string? Description;
+        public LocationId StartingLocationId;
+    }
     class ParsedData
     {
         public string? Id;
@@ -74,11 +83,14 @@ internal class Program
     // Data dictionaries
     static Dictionary<LocationId, LocationData> locationsData =
         new Dictionary<LocationId, LocationData>();
+    static Dictionary<ItemId, ItemData> ItemsData = new Dictionary<ItemId, ItemData>();
 
-
+    //items
+    static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
 
     // Starting state
     static LocationId CurrentLocationId = LocationId.Entrance;
+    static Dictionary<ItemId, LocationId> ItemsLocations = new Dictionary<ItemId, LocationId>();
 
 
     static LocationData InitLocation()
@@ -86,6 +98,7 @@ internal class Program
         LocationData currentLocationData = locationsData[CurrentLocationId];
         return currentLocationData;
     }
+
 
     static void DisplayLocation(LocationData currentLocation)
     {
@@ -100,12 +113,46 @@ internal class Program
         Print(currentLocation.Description);
     }
 
+    static bool ItemAt(ItemId itemId, LocationId locationId)
+    {
+        if (!ItemsLocations.ContainsKey(itemId)) return false;
+        return ItemsLocations[itemId] == locationId;
+    }
+    static IEnumerable<ItemId> GetItemsAtLocation(LocationId locationId)
+    {
+        return ItemsLocations.Keys.Where(itemId => ItemAt(itemId, locationId));
+    }
+
+    static string GetName(ItemId itemId)
+    {
+        return ItemsData[itemId].Name;
+    }
+    static void DisplayInventory()
+    {
+
+        Print("You are carrying:");
+
+        IEnumerable<ItemId> itemsInInventory = GetItemsAtLocation(LocationId.Inventory);
+
+        if (itemsInInventory.Count() == 0)
+        {
+            Print("    nothing.");
+        }
+        else
+        {
+            foreach (ItemId thingId in itemsInInventory)
+            {
+                Print($"{GetName(thingId)}.");
+            }
+        }
+    }
+
     static void DisplayHelp()
     {
         Console.ForegroundColor = HelpColor;
         Print("HELP");
         Print("-------------");
-        Print("You can try moving in a direction by entering the direction (NORTH, SOUTH, EAST or WEST)");
+        Print(@"You can try moving in a direction by entering ""go"" and the direction (NORTH, SOUTH, EAST or WEST)");
         Print("Some things you might be able to TALK to");
         Print("You can also check out whats in your INVENTORY");
         Print("INSPECT lets you take a closer look at objects");
@@ -113,6 +160,8 @@ internal class Program
         Print("USE is the command for using an item from your inventory at a location");
         Print("You can also COMBINE items that you have in your inventory");
         Print("QUIT lets you exit the game");
+        Print("-------------");
+        Print("Press any key to continue");
     }
     static LocationData SwitchLocation(LocationId currentLocationId)
     {
@@ -169,60 +218,75 @@ internal class Program
             string[] words = commandInput.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             string verb = words[0];
+            string? noun = null;
+            //assuming the second word means a noun
+            if (words.Length > 1)
+            {
+                noun = words[1];
+            }
 
             // Call the appropriate handler for the given verb.
             switch (verb)
             {
-                case "north":
-                case "n":
-                    if (currentLocation.Directions.ContainsKey(Direction.North))
+                case "go":
+                    switch (noun)
                     {
-                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
-                    }
-                    else
-                    {
-                        Print("You can't go north from here");
-                    }
-                    break;
+                        case "north":
+                        case "n":
+                            if (currentLocation.Directions.ContainsKey(Direction.North))
+                            {
+                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
+                            }
+                            else
+                            {
+                                Print("You can't go north from here");
+                            }
+                            break;
 
-                case "south":
-                case "s":
-                    if (currentLocation.Directions.ContainsKey(Direction.South))
-                    {
-                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
-                    }
-                    else
-                    {
-                        Print("You can't go south from here");
-                    }
-                    break;
+                        case "south":
+                        case "s":
+                            if (currentLocation.Directions.ContainsKey(Direction.South))
+                            {
+                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
+                            }
+                            else
+                            {
+                                Print("You can't go south from here");
+                            }
+                            break;
 
-                case "east":
-                case "e":
-                    if (currentLocation.Directions.ContainsKey(Direction.East))
-                    {
-                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.East));
-                    }
-                    else
-                    {
-                        Print("You can't go east from here");
-                    }
-                    break;
+                        case "east":
+                        case "e":
+                            if (currentLocation.Directions.ContainsKey(Direction.East))
+                            {
+                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.East));
+                            }
+                            else
+                            {
+                                Print("You can't go east from here");
+                            }
+                            break;
 
-                case "west":
-                case "w":
-                    if (currentLocation.Directions.ContainsKey(Direction.West))
-                    {
-                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.West));
-                    }
-                    else
-                    {
-                        Print("You can't go west from here");
+                        case "west":
+                        case "w":
+                            if (currentLocation.Directions.ContainsKey(Direction.West))
+                            {
+                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.West));
+                            }
+                            else
+                            {
+                                Print("You can't go west from here");
+                            }
+                            break;
+
+                        default:
+                            Print("Go where?");
+                            break;
                     }
                     break;
 
                 case "enter":
-                case "climb in":
+                case "climb":
                 case "vent":
                     if (currentLocation.Directions.ContainsKey(Direction.Vent))
                     {
@@ -236,9 +300,7 @@ internal class Program
 
                 case "inventory":
                 case "inv":
-                    // TODO
-                    // e.g. you could implement a function, which handles the inventory stuff. For example display the inventory, you invoke it,
-                    // and after that you would call CreateUserInterface again.
+                    DisplayInventory();
                     break;
 
                 case "inspect":
@@ -311,6 +373,28 @@ internal class Program
                     Directions = parsedData.Directions
                 };
                 locationsData[locationId] = locationData;
+            }
+        }
+
+        ReadItemData();
+
+        static void ReadItemData()
+        {
+            //Parse the item file
+            List<ParsedData> parsedDataList = ParseData("ItemData.txt");
+
+            // Transfer data from the parsed structures into items data
+            foreach (ParsedData parsedData in parsedDataList)
+            {
+                ItemId itemId = Enum.Parse<ItemId>(parsedData.Id);
+                ItemData itemData = new ItemData
+                {
+                    id = itemId,
+                    Name = parsedData.Name,
+                    Description = parsedData.Description,
+                    StartingLocationId = parsedData.StartingLocationId,
+                };
+                ItemsData[itemId] = itemData;
             }
         }
 
@@ -400,6 +484,39 @@ internal class Program
             return parsedDataList;
         }
 
+        InitalizeItemHelpers();
+
+        static void InitalizeItemHelpers()
+        {
+            // Create a map of items by their name
+            foreach (KeyValuePair<ItemId, ItemData> itemEntry in ItemsData)
+            {
+                string name = itemEntry.Value.Name.ToLowerInvariant();
+
+                // Allow to refer to an item by any of its words.
+                string[] nameParts = name.Split();
+
+                foreach (string namepart in nameParts)
+                {
+                    //Don't override already assigned words
+                    if (ItemIdsByName.ContainsKey(namepart)) continue;
+
+                    ItemIdsByName[namepart] = itemEntry.Key;
+                }
+            }
+        }
+
+        InitializeItemState();
+
+        static void InitializeItemState()
+        {
+            // Set all Items to their starting locations.
+            foreach (KeyValuePair<ItemId, ItemData> itemEntry in ItemsData)
+            {
+                ItemsLocations[itemEntry.Key] = itemEntry.Value.StartingLocationId;
+            }
+        }
+
         // Display title screen
         string title = File.ReadAllText("Title.txt");
         Console.WriteLine(title);
@@ -422,6 +539,7 @@ internal class Program
             //DisplayUserInterface(currentLocation);
 
             DisplayLocation(currentLocation);
+
             currentLocation = HandlePlayerAction(currentLocation);
         }
     }
