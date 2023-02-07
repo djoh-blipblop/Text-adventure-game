@@ -129,14 +129,13 @@ internal class Program
     }
     static void DisplayInventory()
     {
-
         Print("You are carrying:");
 
         IEnumerable<ItemId> itemsInInventory = GetItemsAtLocation(LocationId.Inventory);
 
         if (itemsInInventory.Count() == 0)
         {
-            Print("    nothing.");
+            Print("nothing.");
         }
         else
         {
@@ -216,10 +215,10 @@ internal class Program
         {
             // Analyze the command by assuming the first word is a verb (or similar instruction).
             string[] words = commandInput.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
             string verb = words[0];
-            string? noun = null;
             //assuming the second word means a noun
+            string? noun = null;
+            // Checking if there actually is a word in the command to act upon
             if (words.Length > 1)
             {
                 noun = words[1];
