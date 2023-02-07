@@ -77,8 +77,9 @@ internal class Program
 
 
 
-    // Current state
+    // Starting state
     static LocationId CurrentLocationId = LocationId.Entrance;
+
 
     static LocationData InitLocation()
     {
@@ -88,12 +89,13 @@ internal class Program
 
     static void DisplayLocation(LocationData currentLocation)
     {
-        //TODO uncomment this for play build, and decide if you want to display the location name or only the description
+        //TODO uncomment this for play build, to limit the amount of text on screen, makes the description more current.
         //Console.Clear();
-        Console.ForegroundColor = NarrativeColor;
-        // Display current location description.
-        // LocationData currentLocationData = locationsData[CurrentLocationId];
 
+        Console.ForegroundColor = NarrativeColor;
+
+        // Display current location description.
+        //TODO comment away the location name for the playable build, it ruins immersion
         Print(currentLocation.Name);
         Print(currentLocation.Description);
     }
@@ -102,7 +104,8 @@ internal class Program
     {
         Console.ForegroundColor = HelpColor;
         Print("HELP");
-        Print("You can try moving in a direction by entering the direction (NORTH, SOUTH, EAST or WEST");
+        Print("-------------");
+        Print("You can try moving in a direction by entering the direction (NORTH, SOUTH, EAST or WEST)");
         Print("Some things you might be able to TALK to");
         Print("You can also check out whats in your INVENTORY");
         Print("INSPECT lets you take a closer look at objects");
@@ -142,11 +145,11 @@ internal class Program
     static bool shouldQuit = false;
 
     // Create an UI for the user
-    static void CreateUserInterface(LocationData currentLocation)
+    /*static void DisplayUserInterface(LocationData currentLocation)
     {
         DisplayLocation(currentLocation);
         HandlePlayerAction(currentLocation);
-    }
+    }*/
 
     // Bundle all the prompt styling and handling, return the user input as a string
     static string Prompt()
@@ -162,8 +165,9 @@ internal class Program
         string? commandInput = Console.ReadLine();
         return commandInput;
     }
-    static void HandlePlayerAction(LocationData currentLocation)
+    static LocationData HandlePlayerAction(LocationData currentLocation)
     {
+        LocationData nextLocation = currentLocation;
         string? commandInput = Prompt();
 
         if (commandInput != "")
@@ -180,8 +184,11 @@ internal class Program
                 case "n":
                     if (currentLocation.Directions.ContainsKey(Direction.North))
                     {
-                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
-                        CreateUserInterface(currentLocation);
+                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
+                    }
+                    else
+                    {
+                        Print("You can't go north from here");
                     }
                     break;
 
@@ -189,8 +196,11 @@ internal class Program
                 case "s":
                     if (currentLocation.Directions.ContainsKey(Direction.South))
                     {
-                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
-                        CreateUserInterface(currentLocation);
+                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
+                    }
+                    else
+                    {
+                        Print("You can't go south from here");
                     }
                     break;
 
@@ -198,8 +208,11 @@ internal class Program
                 case "e":
                     if (currentLocation.Directions.ContainsKey(Direction.East))
                     {
-                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.East));
-                        CreateUserInterface(currentLocation);
+                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.East));
+                    }
+                    else
+                    {
+                        Print("You can't go east from here");
                     }
                     break;
 
@@ -207,8 +220,11 @@ internal class Program
                 case "w":
                     if (currentLocation.Directions.ContainsKey(Direction.West))
                     {
-                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.West));
-                        CreateUserInterface(currentLocation);
+                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.West));
+                    }
+                    else
+                    {
+                        Print("You can't go west from here");
                     }
                     break;
 
@@ -217,8 +233,11 @@ internal class Program
                 case "vent":
                     if (currentLocation.Directions.ContainsKey(Direction.Vent))
                     {
-                        currentLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.Vent));
-                        CreateUserInterface(currentLocation);
+                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.Vent));
+                    }
+                    else
+                    {
+                        Print("There isn't anything to climb into here");
                     }
                     break;
 
@@ -253,11 +272,12 @@ internal class Program
                     DisplayHelp();
                     Console.ReadLine();
                     Console.Clear();
-                    CreateUserInterface(currentLocation);
                     break;
 
                 case "quit":
                 case "exit":
+                    //TODO create a confirmation for playable build, to avoid players quiting when they want to "exit" a room with no other directions then the one they came from
+
                     Print("Goodbye!");
                     shouldQuit = true;
                     break;
@@ -270,8 +290,9 @@ internal class Program
         else
         {
             // view prompt when no user input has been given, e.g. Only Enter has been pressed
-            HandlePlayerAction(currentLocation);
+            nextLocation = HandlePlayerAction(currentLocation);
         }
+        return nextLocation;
     }
 
     private static void Main(string[] args)
@@ -386,7 +407,6 @@ internal class Program
             return parsedDataList;
         }
 
-
         // Display title screen
         string title = File.ReadAllText("Title.txt");
         Console.WriteLine(title);
@@ -401,12 +421,15 @@ internal class Program
         //Console.Clear();
 
         //Game start
-        //LocationData currentLocation = InitLocation();
-        //CreateUserInterface(currentLocation);
+        LocationData currentLocation = InitLocation();
+        //DisplayUserInterface(currentLocation);
 
         while (shouldQuit == false)
         {
-            CreateUserInterface(currentLocation);
+            //DisplayUserInterface(currentLocation);
+
+            DisplayLocation(currentLocation);
+            currentLocation = HandlePlayerAction(currentLocation);
         }
     }
 }
