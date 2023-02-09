@@ -10,7 +10,7 @@ StartingLocation: ServerRoom
 
 MultiTool
 Name: Multi-tool
-Description: A tool for the modern 'jacker. It features a screwdriver with bits, a 'jack-point spike and a hexBin terminal with pad. You wonder what you would do with out your trusted multitool.
+Description: A tool for the modern 'jacker. It features a screwdriver with bits, a 'jack-point spike and a hexBin terminal with pad. You wonder what you would do without your trusted multitool.
 StartingLocation: Inventory
 
 Hamburger

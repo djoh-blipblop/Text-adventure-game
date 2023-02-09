@@ -48,12 +48,14 @@ enum NPCId
 }
 internal class Program
 {
+    //UI elements, colors and textspeed etc
     const ConsoleColor NarrativeColor = ConsoleColor.Green;
     const ConsoleColor PromptColor = ConsoleColor.White;
     const ConsoleColor PlayerColor = ConsoleColor.DarkGray;
     const ConsoleColor HelpColor = ConsoleColor.Red;
     const int PrintPauseMilliseconds = 800;
 
+    //Data classes
     class LocationData
     {
         public LocationId Id;
@@ -85,21 +87,21 @@ internal class Program
         new Dictionary<LocationId, LocationData>();
     static Dictionary<ItemId, ItemData> ItemsData = new Dictionary<ItemId, ItemData>();
 
-    //items
+    //item dictionaries
     static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
+    static Dictionary<ItemId, LocationId> ItemsLocations = new Dictionary<ItemId, LocationId>();
 
     // Starting state
     static LocationId CurrentLocationId = LocationId.Entrance;
-    static Dictionary<ItemId, LocationId> ItemsLocations = new Dictionary<ItemId, LocationId>();
 
-
+    // I don't know what this does really but dont touch it
     static LocationData InitLocation()
     {
         LocationData currentLocationData = locationsData[CurrentLocationId];
         return currentLocationData;
     }
 
-
+    //This method gives the user the text for the location its at
     static void DisplayLocation(LocationData currentLocation)
     {
         //TODO uncomment this for play build, to limit the amount of text on screen, makes the description more current.
@@ -113,6 +115,7 @@ internal class Program
         Print(currentLocation.Description);
     }
 
+    //This method checks if an item is there at the location
     static bool ItemAt(ItemId itemId, LocationId locationId)
     {
         if (!ItemsLocations.ContainsKey(itemId)) return false;
@@ -123,10 +126,36 @@ internal class Program
         return ItemsLocations.Keys.Where(itemId => ItemAt(itemId, locationId));
     }
 
+    //Gets the name of an item using the ItemId Enum
     static string GetName(ItemId itemId)
     {
         return ItemsData[itemId].Name;
     }
+
+    //Gets the description of an item using the ItemId Enum
+    static string GetDescription(ItemId itemId)
+    {
+        return ItemsData[itemId].Description;
+    }
+
+    //Gets the ItemId enum from user inputs, translating written words to enums which can be used to as keys
+    static List<ItemId> GetItemIdsFromWords(string[] words)
+    {
+        List<ItemId> itemIds = new List<ItemId>();
+
+        // For each word, see if it's a name of a thing.
+        foreach (string word in words)
+        {
+            if (ItemIdsByName.ContainsKey(word))
+            {
+                itemIds.Add(ItemIdsByName[word]);
+            }
+        }
+
+        return itemIds;
+    }
+
+    //Displays what the player is currently carrying
     static void DisplayInventory()
     {
         Print("You are carrying:");
@@ -139,13 +168,24 @@ internal class Program
         }
         else
         {
-            foreach (ItemId thingId in itemsInInventory)
+            foreach (ItemId itemId in itemsInInventory)
             {
-                Print($"{GetName(thingId)}.");
+                Print($"{GetName(itemId)}.");
             }
         }
     }
 
+    //Let's the player take a closer look at things they are carrying, useful for hints about what to use the item for and for worldbuilding
+    static void InspectItem(string[] words, List<ItemId> itemIds)
+    {
+        foreach (ItemId item in itemIds)
+        {
+            Print(GetName(item));
+            Print(GetDescription(item));
+        }
+    }
+
+    //Gives the player of a list of things they can try to do in the game
     static void DisplayHelp()
     {
         Console.ForegroundColor = HelpColor;
@@ -153,8 +193,9 @@ internal class Program
         Print("-------------");
         Print(@"You can try moving in a direction by entering ""go"" and the direction (NORTH, SOUTH, EAST or WEST)");
         Print("Some things you might be able to TALK to");
+        Print("Try taking a closer LOOK at your surroundings if you're stuck");
         Print("You can also check out whats in your INVENTORY");
-        Print("INSPECT lets you take a closer look at objects");
+        Print("INSPECT lets you take a closer look at items in your inventory");
         Print("GET lets you take items with you");
         Print("USE is the command for using an item from your inventory at a location");
         Print("You can also COMBINE items that you have in your inventory");
@@ -162,18 +203,22 @@ internal class Program
         Print("-------------");
         Print("Press any key to continue");
     }
+
+    //Method for moving between locations
     static LocationData SwitchLocation(LocationId currentLocationId)
     {
         LocationData destinationLocation = locationsData[currentLocationId];
         return destinationLocation;
     }
 
+    //Don't really know what this is used for but leave it be
     static LocationData GenerateLocationData()
     {
         LocationData currentLocationData = locationsData[CurrentLocationId];
         return currentLocationData;
     }
 
+    //Method for displaying text, uses the UI elements to make the text print in the right colour etc.
     static void Print(string text)
     {
         // Split text into lines that don't exceed the window width.
@@ -190,6 +235,7 @@ internal class Program
         }
     }
 
+    //inital state for the "quit" flag
     static bool shouldQuit = false;
 
     // Bundle all the prompt styling and handling, return the user input as a string
@@ -206,6 +252,8 @@ internal class Program
         string? commandInput = Console.ReadLine();
         return commandInput;
     }
+
+    //The text parser that figures out what the player wants to do and tries to do it
     static LocationData HandlePlayerAction(LocationData currentLocation)
     {
         LocationData nextLocation = currentLocation;
@@ -223,6 +271,9 @@ internal class Program
             {
                 noun = words[1];
             }
+
+            //Checking if there are items mentioned in the input, if so get the Ids they correspond to.
+            List<ItemId> itemIds = GetItemIdsFromWords(words);
 
             // Call the appropriate handler for the given verb.
             switch (verb)
@@ -303,7 +354,18 @@ internal class Program
                     break;
 
                 case "inspect":
-                    // TO DO
+                    if (words.Length > 1)
+                    {
+                        InspectItem(words, itemIds);
+                    }
+                    else
+                    {
+                        Print("Inspect what?");
+                    }
+                    break;
+
+                case "look":
+                    //TODO
                     break;
 
                 case "get":
@@ -531,14 +593,11 @@ internal class Program
 
         //Game start
         LocationData currentLocation = InitLocation();
-        //DisplayUserInterface(currentLocation);
 
+        //Gameplay loop
         while (shouldQuit == false)
         {
-            //DisplayUserInterface(currentLocation);
-
             DisplayLocation(currentLocation);
-
             currentLocation = HandlePlayerAction(currentLocation);
         }
     }
