@@ -65,13 +65,13 @@ internal class Program
             new Dictionary<Direction, LocationId>();
 
     }
-
     class ItemData
     {
         public ItemId id;
         public string? Name;
         public string? Description;
         public LocationId StartingLocationId;
+        public LocationId PickUpToId;
     }
     class ParsedData
     {
@@ -80,16 +80,18 @@ internal class Program
         public string? Description;
         public Dictionary<Direction, LocationId>? Directions;
         public LocationId StartingLocationId;
+        public LocationId PickUpToId;
     }
 
     // Data dictionaries
     static Dictionary<LocationId, LocationData> locationsData =
         new Dictionary<LocationId, LocationData>();
     static Dictionary<ItemId, ItemData> ItemsData = new Dictionary<ItemId, ItemData>();
-
-    //item dictionaries
     static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
     static Dictionary<ItemId, LocationId> ItemsLocations = new Dictionary<ItemId, LocationId>();
+
+    //helpers
+    static ItemId[] ItemsYouCanGet = { ItemId.KeyCard, ItemId.Hamburger, ItemId.Ice, ItemId.AICore, ItemId.Chlorine, ItemId.DroneBattery, };
 
     // Starting state
     static LocationId CurrentLocationId = LocationId.Entrance;
@@ -101,7 +103,7 @@ internal class Program
         return currentLocationData;
     }
 
-    //This method gives the user the text for the location its at
+    //This method gives the user the text description for the location its at
     static void DisplayLocation(LocationData currentLocation)
     {
         //TODO uncomment this for play build, to limit the amount of text on screen, makes the description more current.
@@ -136,6 +138,12 @@ internal class Program
     static string GetDescription(ItemId itemId)
     {
         return ItemsData[itemId].Description;
+    }
+
+    //Gets the starting location of an item
+    static LocationId GetItemLocation(ItemId itemId)
+    {
+        return ItemsData[itemId].StartingLocationId;
     }
 
     //Gets the ItemId enum from user inputs, translating written words to enums which can be used to as keys
@@ -178,10 +186,48 @@ internal class Program
     //Let's the player take a closer look at things they are carrying, useful for hints about what to use the item for and for worldbuilding
     static void InspectItem(string[] words, List<ItemId> itemIds)
     {
-        foreach (ItemId item in itemIds)
+        if (ItemAt(itemIds[0], LocationId.Inventory))
         {
-            Print(GetName(item));
-            Print(GetDescription(item));
+            Print(GetName(itemIds[0]));
+            Print(GetDescription(itemIds[0]));
+        }
+        else
+        {
+            Print("You are not carrying that");
+        }
+    }
+
+    //Method for trying to pick up an item
+    //TODO fix bug, always at entrance when trying to pick up. Probably something to do with currentLocationID vs. currentLocation
+    static void GetItem(string[] words, List<ItemId> itemIds, LocationId currentLocationId)
+    {
+        if (words.Length > 1)
+        {
+            IEnumerable<ItemId> itemsAtThisLocation = GetItemsAtLocation(currentLocationId);
+
+            IEnumerable<ItemId> avalibleItemsToGet = ItemsYouCanGet.Intersect(itemsAtThisLocation);
+
+            if (avalibleItemsToGet.Count() == 0)
+            {
+                Print("There is nothing here that you can pick up");
+                return;
+            }
+
+            foreach (ItemId itemId in itemIds)
+            {
+                //Determine where the item gets pick up to
+                ItemData itemData = ItemsData[itemId];
+                LocationId destination = itemData.PickUpToId;
+                //Change the item location to where it needs to go
+                ItemsLocations[itemId] = destination;
+
+                //ItemsLocations[itemId] = ItemsData[itemId].PickUpToId;
+            }
+            Print("were testing give us some time dammit");
+        }
+        else
+        {
+            Print("Get what?");
         }
     }
 
@@ -369,7 +415,7 @@ internal class Program
                     break;
 
                 case "get":
-                    // TO DO
+                    GetItem(words, itemIds, CurrentLocationId);
                     break;
 
                 case "use":
@@ -454,6 +500,7 @@ internal class Program
                     Name = parsedData.Name,
                     Description = parsedData.Description,
                     StartingLocationId = parsedData.StartingLocationId,
+                    PickUpToId = parsedData.PickUpToId,
                 };
                 ItemsData[itemId] = itemData;
             }
@@ -529,6 +576,10 @@ internal class Program
 
                         case "StartingLocation":
                             parsedData.StartingLocationId = Enum.Parse<LocationId>(value);
+                            break;
+
+                        case "PickUpTo":
+                            parsedData.PickUpToId = Enum.Parse<LocationId>(value);
                             break;
                     }
 
