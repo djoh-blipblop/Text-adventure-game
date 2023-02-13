@@ -59,52 +59,204 @@ internal class Program
     class LocationData
     {
         public LocationId Id;
-        public string? Name;
-        public string? Description;
-        public Dictionary<Direction, LocationId>? Directions =
-            new Dictionary<Direction, LocationId>();
+        public string Name = string.Empty;
+        public string Description = string.Empty;
+        public string DetailedDescription = string.Empty;
+        public Dictionary<Direction, LocationId> Directions = new Dictionary<Direction, LocationId>();
 
     }
     class ItemData
     {
         public ItemId id;
-        public string? Name;
-        public string? Description;
+        public string Name = string.Empty;
+        public string Description = string.Empty;
         public LocationId StartingLocationId;
-        public LocationId PickUpToId;
     }
     class ParsedData
     {
-        public string? Id;
-        public string? Name;
-        public string? Description;
-        public Dictionary<Direction, LocationId>? Directions;
+        public string Id = string.Empty;
+        public string Name = string.Empty;
+        public string Description = string.Empty;
+        public string DetailedDescription = string.Empty;
+        public Dictionary<Direction, LocationId> Directions = new Dictionary<Direction, LocationId>();
         public LocationId StartingLocationId;
-        public LocationId PickUpToId;
     }
 
     // Data dictionaries
-    static Dictionary<LocationId, LocationData> locationsData =
-        new Dictionary<LocationId, LocationData>();
+    static Dictionary<LocationId, LocationData> LocationsData = new Dictionary<LocationId, LocationData>();
     static Dictionary<ItemId, ItemData> ItemsData = new Dictionary<ItemId, ItemData>();
-    static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
-    static Dictionary<ItemId, LocationId> ItemsLocations = new Dictionary<ItemId, LocationId>();
 
     //helpers
+    static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
     static ItemId[] ItemsYouCanGet = { ItemId.KeyCard, ItemId.Hamburger, ItemId.Ice, ItemId.AICore, ItemId.Chlorine, ItemId.DroneBattery, };
+    static ItemId[] ItemsYouCanCombine = { ItemId.Ice, ItemId.Chlorine, ItemId.DroneBattery, };
 
-    // Starting state
-    static LocationId CurrentLocationId = LocationId.Entrance;
+    // Current state
+    static LocationData CurrentLocation = new LocationData();
+    static Dictionary<ItemId, LocationId> CurrentItemLocations = new Dictionary<ItemId, LocationId>();
 
-    // I don't know what this does really but dont touch it
-    static LocationData InitLocation()
+    static void ReadLocationsData()
     {
-        LocationData currentLocationData = locationsData[CurrentLocationId];
-        return currentLocationData;
+        // Parse the locations file.
+        List<ParsedData> parsedDataList = ParseData("LocationData.txt");
+
+        // Transfer data from the parsed structures into locations data.
+        foreach (ParsedData parsedData in parsedDataList)
+        {
+            LocationId locationId = Enum.Parse<LocationId>(parsedData.Id);
+            LocationData locationData = new LocationData
+            {
+                Id = locationId,
+                Name = parsedData.Name,
+                Description = parsedData.Description,
+                DetailedDescription = parsedData.DetailedDescription,
+                Directions = parsedData.Directions
+            };
+            LocationsData[locationId] = locationData;
+        }
+    }
+    static void ReadItemData()
+    {
+        //Parse the item file
+        List<ParsedData> parsedDataList = ParseData("ItemData.txt");
+
+        // Transfer data from the parsed structures into items data
+        foreach (ParsedData parsedData in parsedDataList)
+        {
+            ItemId itemId = Enum.Parse<ItemId>(parsedData.Id);
+            ItemData itemData = new ItemData
+            {
+                id = itemId,
+                Name = parsedData.Name,
+                Description = parsedData.Description,
+                StartingLocationId = parsedData.StartingLocationId,
+            };
+            ItemsData[itemId] = itemData;
+        }
+    }
+
+    static void InitalizeItemHelpers()
+    {
+        // Create a map of items by their name
+        foreach (KeyValuePair<ItemId, ItemData> itemEntry in ItemsData)
+        {
+            string name = itemEntry.Value.Name.ToLowerInvariant();
+
+            // Allow to refer to an item by any of its words.
+            string[] nameParts = name.Split();
+
+            foreach (string namepart in nameParts)
+            {
+                //Don't override already assigned words
+                if (ItemIdsByName.ContainsKey(namepart)) continue;
+
+                ItemIdsByName[namepart] = itemEntry.Key;
+            }
+        }
+    }
+    static void InitializeStartingState()
+    {
+        //Set player starting location
+        CurrentLocation = LocationsData[LocationId.Entrance];
+
+        // Set all Items to their starting locations.
+        foreach (KeyValuePair<ItemId, ItemData> itemEntry in ItemsData)
+        {
+            CurrentItemLocations[itemEntry.Key] = itemEntry.Value.StartingLocationId;
+        }
+    }
+    //Parse data
+    static List<ParsedData> ParseData(string filePath)
+    {
+        var parsedDataList = new List<ParsedData>();
+
+        string[] dataLines = File.ReadAllLines(filePath);
+        var currentLineIndex = 0;
+
+        // Parse data until we reach the end.
+        while (currentLineIndex < dataLines.Length)
+        {
+            // First line of data holds the ID string.
+            string id = dataLines[currentLineIndex];
+
+            // Initialize the structure that will hold parsed data.
+            var parsedData = new ParsedData
+            {
+                Id = id,
+                Directions = new Dictionary<Direction, LocationId>()
+            };
+
+            // The remaining lines hold various properties in "property: value" or "property:" format.
+            currentLineIndex++;
+
+            do
+            {
+                // Extract property and potentially value.
+                MatchCollection matches = Regex.Matches(dataLines[currentLineIndex], @"(\w+): *(.*)?");
+
+
+                if (matches.Count == 0)
+                {
+                    throw new FormatException("Invalid property line: " + dataLines[currentLineIndex]);
+                }
+
+                string property = matches[0].Groups[1].Value;
+                string value = matches[0].Groups[2]?.Value ?? string.Empty;
+
+                // Store value into data structure.
+                switch (property)
+                {
+                    case "Name":
+                        parsedData.Name = value;
+                        break;
+
+                    case "Description":
+                        parsedData.Description = value;
+                        break;
+
+                    case "DetailedDescription":
+                        parsedData.DetailedDescription = value;
+                        break;
+
+                    case "Directions":
+                        // Directions are listed in separate lines with format "  direction: destination".
+                        do
+                        {
+                            // Continue while the next line is a directions line.
+                            MatchCollection directionsLineMatches = Regex.Matches(dataLines[currentLineIndex + 1], @"[\t]+(\w+): *(.*)");
+
+                            if (directionsLineMatches.Count == 0) break;
+
+                            // Store parsed data into the directions dictionary.
+                            Direction direction = Enum.Parse<Direction>(directionsLineMatches[0].Groups[1].Value);
+                            LocationId destination = Enum.Parse<LocationId>(directionsLineMatches[0].Groups[2].Value);
+                            parsedData.Directions[direction] = destination;
+
+                            currentLineIndex++;
+
+                        } while (currentLineIndex + 1 < dataLines.Length);
+                        break;
+
+                    case "StartingLocation":
+                        parsedData.StartingLocationId = Enum.Parse<LocationId>(value);
+                        break;
+                }
+
+                currentLineIndex++;
+
+                // Keep parsing until we reach an empty line, which signifies the end of the current entry.
+            } while (currentLineIndex < dataLines.Length && dataLines[currentLineIndex].Length > 0);
+
+            // All data for this entry was parsed. Store it and skip the next empty line.
+            parsedDataList.Add(parsedData);
+            currentLineIndex++;
+        }
+
+        return parsedDataList;
     }
 
     //This method gives the user the text description for the location its at
-    static void DisplayLocation(LocationData currentLocation)
+    static void DisplayCurrentLocation()
     {
         //TODO uncomment this for play build, to limit the amount of text on screen, makes the description more current.
         //Console.Clear();
@@ -113,19 +265,35 @@ internal class Program
 
         // Display current location description.
         //TODO comment away the location name for the playable build, it ruins immersion
-        Print(currentLocation.Name);
-        Print(currentLocation.Description);
+        Print(CurrentLocation.Name);
+        Print(CurrentLocation.Description);
+    }
+
+    //This method display additional text about the location, if there is any, when the player uses the "LOOK" command
+    static void DisplayLookText(LocationData currentLocation)
+    {
+        Console.ForegroundColor = NarrativeColor;
+        if (currentLocation.DetailedDescription != null)
+        {
+            Print(currentLocation.DetailedDescription);
+        }
+        else
+        {
+            Print("There is nothing really noteworthy or interesting here.");
+        }
     }
 
     //This method checks if an item is there at the location
     static bool ItemAt(ItemId itemId, LocationId locationId)
     {
-        if (!ItemsLocations.ContainsKey(itemId)) return false;
-        return ItemsLocations[itemId] == locationId;
+        if (!CurrentItemLocations.ContainsKey(itemId)) return false;
+        return CurrentItemLocations[itemId] == locationId;
     }
+
+    //This lets the game know where items are
     static IEnumerable<ItemId> GetItemsAtLocation(LocationId locationId)
     {
-        return ItemsLocations.Keys.Where(itemId => ItemAt(itemId, locationId));
+        return CurrentItemLocations.Keys.Where(itemId => ItemAt(itemId, locationId));
     }
 
     //Gets the name of an item using the ItemId Enum
@@ -137,6 +305,16 @@ internal class Program
     //Gets the description of an item using the ItemId Enum
     static string GetDescription(ItemId itemId)
     {
+        if (ItemsData[itemId] == null)
+        {
+            throw new ArgumentException($"{itemId} does not have corresponding data");
+        }
+
+        if (ItemsData[itemId].Description == null)
+        {
+            throw new ArgumentException($"{itemId} does not have a description");
+        }
+
         return ItemsData[itemId].Description;
     }
 
@@ -197,37 +375,36 @@ internal class Program
         }
     }
 
-    //Method for trying to pick up an item
-    //TODO fix bug, always at entrance when trying to pick up. Probably something to do with currentLocationID vs. currentLocation
-    static void GetItem(string[] words, List<ItemId> itemIds, LocationId currentLocationId)
+    //Method for trying to pick up items
+    static void GetItems(List<ItemId> itemIds)
     {
-        if (words.Length > 1)
+        IEnumerable<ItemId> itemsAtThisLocation = GetItemsAtLocation(CurrentLocation.Id);
+
+        List<ItemId> avalibleItemsToGet = ItemsYouCanGet.Intersect(itemsAtThisLocation).ToList();
+
+        if (avalibleItemsToGet.Count() == 0)
         {
-            IEnumerable<ItemId> itemsAtThisLocation = GetItemsAtLocation(currentLocationId);
-
-            IEnumerable<ItemId> avalibleItemsToGet = ItemsYouCanGet.Intersect(itemsAtThisLocation);
-
-            if (avalibleItemsToGet.Count() == 0)
-            {
-                Print("There is nothing here that you can pick up");
-                return;
-            }
-
-            foreach (ItemId itemId in itemIds)
-            {
-                //Determine where the item gets pick up to
-                ItemData itemData = ItemsData[itemId];
-                LocationId destination = itemData.PickUpToId;
-                //Change the item location to where it needs to go
-                ItemsLocations[itemId] = destination;
-
-                //ItemsLocations[itemId] = ItemsData[itemId].PickUpToId;
-            }
-            Print("were testing give us some time dammit");
+            Print("There is nothing here that you can pick up");
+            return;
         }
-        else
+
+        if (itemIds.Count == 0)
         {
             Print("Get what?");
+            return;
+        }
+
+        foreach (ItemId itemId in itemIds)
+        {
+            if (avalibleItemsToGet.Contains(itemId))
+            {
+                CurrentItemLocations[itemId] = LocationId.Inventory;
+                Print($"You picked up {ItemsData[itemId].Name}");
+            }
+            else
+            {
+                Print($"You can't find {ItemsData[itemId].Name}");
+            }
         }
     }
 
@@ -251,17 +428,9 @@ internal class Program
     }
 
     //Method for moving between locations
-    static LocationData SwitchLocation(LocationId currentLocationId)
+    static void SwitchLocation(LocationId destinationLocationId)
     {
-        LocationData destinationLocation = locationsData[currentLocationId];
-        return destinationLocation;
-    }
-
-    //Don't really know what this is used for but leave it be
-    static LocationData GenerateLocationData()
-    {
-        LocationData currentLocationData = locationsData[CurrentLocationId];
-        return currentLocationData;
+        CurrentLocation = LocationsData[destinationLocationId];
     }
 
     //Method for displaying text, uses the UI elements to make the text print in the right colour etc.
@@ -296,338 +465,175 @@ internal class Program
 
         Console.ForegroundColor = PlayerColor;
         string? commandInput = Console.ReadLine();
-        return commandInput;
+        return commandInput ?? string.Empty;
     }
 
     //The text parser that figures out what the player wants to do and tries to do it
-    static LocationData HandlePlayerAction(LocationData currentLocation)
+    static void HandlePlayerAction()
     {
-        LocationData nextLocation = currentLocation;
-        string? commandInput = Prompt();
+        string commandInput = Prompt();
 
-        if (commandInput != "")
+        if (commandInput == string.Empty)
         {
-            // Analyze the command by assuming the first word is a verb (or similar instruction).
-            string[] words = commandInput.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            string verb = words[0];
-            //assuming the second word means a noun
-            string? noun = null;
-            // Checking if there actually is a word in the command to act upon
-            if (words.Length > 1)
-            {
-                noun = words[1];
-            }
-
-            //Checking if there are items mentioned in the input, if so get the Ids they correspond to.
-            List<ItemId> itemIds = GetItemIdsFromWords(words);
-
-            // Call the appropriate handler for the given verb.
-            switch (verb)
-            {
-                case "go":
-                    switch (noun)
-                    {
-                        case "north":
-                        case "n":
-                            if (currentLocation.Directions.ContainsKey(Direction.North))
-                            {
-                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.North));
-                            }
-                            else
-                            {
-                                Print("You can't go north from here");
-                            }
-                            break;
-
-                        case "south":
-                        case "s":
-                            if (currentLocation.Directions.ContainsKey(Direction.South))
-                            {
-                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.South));
-                            }
-                            else
-                            {
-                                Print("You can't go south from here");
-                            }
-                            break;
-
-                        case "east":
-                        case "e":
-                            if (currentLocation.Directions.ContainsKey(Direction.East))
-                            {
-                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.East));
-                            }
-                            else
-                            {
-                                Print("You can't go east from here");
-                            }
-                            break;
-
-                        case "west":
-                        case "w":
-                            if (currentLocation.Directions.ContainsKey(Direction.West))
-                            {
-                                nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.West));
-                            }
-                            else
-                            {
-                                Print("You can't go west from here");
-                            }
-                            break;
-
-                        default:
-                            Print("Go where?");
-                            break;
-                    }
-                    break;
-
-                case "enter":
-                case "climb":
-                case "vent":
-                    if (currentLocation.Directions.ContainsKey(Direction.Vent))
-                    {
-                        nextLocation = SwitchLocation(currentLocation.Directions.GetValueOrDefault(Direction.Vent));
-                    }
-                    else
-                    {
-                        Print("There isn't anything to climb into here");
-                    }
-                    break;
-
-                case "inventory":
-                case "inv":
-                    DisplayInventory();
-                    break;
-
-                case "inspect":
-                    if (words.Length > 1)
-                    {
-                        InspectItem(words, itemIds);
-                    }
-                    else
-                    {
-                        Print("Inspect what?");
-                    }
-                    break;
-
-                case "look":
-                    //TODO
-                    break;
-
-                case "get":
-                    GetItem(words, itemIds, CurrentLocationId);
-                    break;
-
-                case "use":
-                    // to do
-                    break;
-
-                case "combine":
-                    // to do
-                    break;
-
-                case "talk":
-                    // to do
-                    break;
-
-                case "help":
-                    DisplayHelp();
-                    Console.ReadLine();
-                    Console.Clear();
-                    break;
-
-                case "quit":
-                case "exit":
-                    //TODO create a confirmation for playable build, to avoid players quiting when they want to "exit" a room with no other directions then the one they came from
-
-                    Print("Goodbye!");
-                    shouldQuit = true;
-                    break;
-
-                default:
-                    Print("I do not understand you.");
-                    break;
-            }
+            return;
         }
-        else
+
+        // Analyze the command by assuming the first word is a verb (or similar instruction).
+        string[] words = commandInput.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        string verb = words[0];
+
+        //assuming the second word means a noun
+        string noun = string.Empty;
+
+        // Checking if there actually is a word in the command to act upon
+        if (words.Length > 1)
         {
-            // view prompt when no user input has been given, e.g. Only Enter has been pressed
-            nextLocation = HandlePlayerAction(currentLocation);
+            noun = words[1];
         }
-        return nextLocation;
+
+        //Checking if there are items mentioned in the input, if so get the Ids they correspond to.
+        List<ItemId> itemIds = GetItemIdsFromWords(words);
+
+        // Call the appropriate handler for the given verb.
+        switch (verb)
+        {
+            case "go":
+                switch (noun)
+                {
+                    case "north":
+                    case "n":
+                        if (CurrentLocation.Directions.ContainsKey(Direction.North))
+                        {
+                            SwitchLocation(CurrentLocation.Directions[Direction.North]);
+                        }
+                        else
+                        {
+                            Print("You can't go north from here");
+                        }
+                        break;
+
+                    case "south":
+                    case "s":
+                        if (CurrentLocation.Directions.ContainsKey(Direction.South))
+                        {
+                            SwitchLocation(CurrentLocation.Directions[Direction.South]);
+                        }
+                        else
+                        {
+                            Print("You can't go south from here");
+                        }
+                        break;
+
+                    case "east":
+                    case "e":
+                        if (CurrentLocation.Directions.ContainsKey(Direction.East))
+                        {
+                            SwitchLocation(CurrentLocation.Directions[Direction.East]);
+                        }
+                        else
+                        {
+                            Print("You can't go east from here");
+                        }
+                        break;
+
+                    case "west":
+                    case "w":
+                        if (CurrentLocation.Directions.ContainsKey(Direction.West))
+                        {
+                            SwitchLocation(CurrentLocation.Directions[Direction.West]);
+                        }
+                        else
+                        {
+                            Print("You can't go west from here");
+                        }
+                        break;
+
+                    default:
+                        Print("Go where?");
+                        break;
+                }
+                break;
+
+            case "enter":
+            case "climb":
+            case "vent":
+                if (CurrentLocation.Directions.ContainsKey(Direction.Vent))
+                {
+                    SwitchLocation(CurrentLocation.Directions[Direction.Vent]);
+                }
+                else
+                {
+                    Print("There isn't anything to climb into here");
+                }
+                break;
+
+            case "inventory":
+            case "inv":
+                DisplayInventory();
+                break;
+
+            case "inspect":
+                if (words.Length > 1)
+                {
+                    InspectItem(words, itemIds);
+                }
+                else
+                {
+                    Print("Inspect what?");
+                }
+                break;
+
+            case "look":
+                DisplayLookText(CurrentLocation);
+                break;
+
+            case "get":
+                GetItems(itemIds);
+                break;
+
+            case "use":
+                // to do
+                break;
+
+            case "combine":
+                // to do
+                break;
+
+            case "talk":
+                // to do
+                break;
+
+            case "help":
+                DisplayHelp();
+                Console.ReadLine();
+                Console.Clear();
+                break;
+
+            case "quit":
+            case "exit":
+                //TODO create a confirmation for playable build, to avoid players quiting when they want to "exit" a room with no other directions then the one they came from
+
+                Print("Goodbye!");
+                shouldQuit = true;
+                break;
+
+            default:
+                Print("I do not understand you.");
+                break;
+        }
     }
 
     private static void Main(string[] args)
     {
-        //Initalizing
-
+        //Initalizing data
         ReadLocationsData();
-
-        static void ReadLocationsData()
-        {
-            // Parse the locations file.
-            List<ParsedData> parsedDataList = ParseData("LocationData.txt");
-
-            // Transfer data from the parsed structures into locations data.
-            foreach (ParsedData parsedData in parsedDataList)
-            {
-                LocationId locationId = Enum.Parse<LocationId>(parsedData.Id);
-                LocationData locationData = new LocationData
-                {
-                    Id = locationId,
-                    Name = parsedData.Name,
-                    Description = parsedData.Description,
-                    Directions = parsedData.Directions
-                };
-                locationsData[locationId] = locationData;
-            }
-        }
-
         ReadItemData();
 
-        static void ReadItemData()
-        {
-            //Parse the item file
-            List<ParsedData> parsedDataList = ParseData("ItemData.txt");
-
-            // Transfer data from the parsed structures into items data
-            foreach (ParsedData parsedData in parsedDataList)
-            {
-                ItemId itemId = Enum.Parse<ItemId>(parsedData.Id);
-                ItemData itemData = new ItemData
-                {
-                    id = itemId,
-                    Name = parsedData.Name,
-                    Description = parsedData.Description,
-                    StartingLocationId = parsedData.StartingLocationId,
-                    PickUpToId = parsedData.PickUpToId,
-                };
-                ItemsData[itemId] = itemData;
-            }
-        }
-
-        static List<ParsedData> ParseData(string filePath)
-        {
-            var parsedDataList = new List<ParsedData>();
-
-            string[] dataLines = File.ReadAllLines(filePath);
-            var currentLineIndex = 0;
-
-            // Parse data until we reach the end.
-            while (currentLineIndex < dataLines.Length)
-            {
-                // First line of data holds the ID string.
-                string id = dataLines[currentLineIndex];
-
-                // Initialize the structure that will hold parsed data.
-                var parsedData = new ParsedData
-                {
-                    Id = id,
-                    Directions = new Dictionary<Direction, LocationId>()
-                };
-
-                // The remaining lines hold various properties in "property: value" or "property:" format.
-                currentLineIndex++;
-
-                do
-                {
-                    // Extract property and potentially value.
-                    MatchCollection matches = Regex.Matches(dataLines[currentLineIndex], @"(\w+): *(.*)?");
-
-
-                    if (matches.Count == 0)
-                    {
-                        throw new FormatException("Invalid property line: " + dataLines[currentLineIndex]);
-                    }
-
-                    string property = matches[0].Groups[1].Value;
-                    string value = matches[0].Groups[2]?.Value;
-
-                    // Store value into data structure.
-                    switch (property)
-                    {
-                        case "Name":
-                            parsedData.Name = value;
-                            break;
-
-                        case "Description":
-                            parsedData.Description = value;
-                            break;
-
-                        case "Directions":
-                            // Directions are listed in separate lines with format "  direction: destination".
-                            do
-                            {
-                                // Continue while the next line is a directions line.
-                                MatchCollection directionsLineMatches = Regex.Matches(dataLines[currentLineIndex + 1], @"[\t]+(\w+): *(.*)");
-
-
-                                if (directionsLineMatches.Count == 0) break;
-
-                                // Store parsed data into the directions dictionary.
-                                Direction direction = Enum.Parse<Direction>(directionsLineMatches[0].Groups[1].Value);
-                                LocationId destination = Enum.Parse<LocationId>(directionsLineMatches[0].Groups[2].Value);
-                                parsedData.Directions[direction] = destination;
-
-                                currentLineIndex++;
-
-                            } while (currentLineIndex + 1 < dataLines.Length);
-                            break;
-
-                        case "StartingLocation":
-                            parsedData.StartingLocationId = Enum.Parse<LocationId>(value);
-                            break;
-
-                        case "PickUpTo":
-                            parsedData.PickUpToId = Enum.Parse<LocationId>(value);
-                            break;
-                    }
-
-                    currentLineIndex++;
-
-                    // Keep parsing until we reach an empty line, which signifies the end of the current entry.
-                } while (currentLineIndex < dataLines.Length && dataLines[currentLineIndex].Length > 0);
-
-                // All data for this entry was parsed. Store it and skip the next empty line.
-                parsedDataList.Add(parsedData);
-                currentLineIndex++;
-            }
-
-            return parsedDataList;
-        }
-
+        //Initalizing stuff for handling items
         InitalizeItemHelpers();
 
-        static void InitalizeItemHelpers()
-        {
-            // Create a map of items by their name
-            foreach (KeyValuePair<ItemId, ItemData> itemEntry in ItemsData)
-            {
-                string name = itemEntry.Value.Name.ToLowerInvariant();
-
-                // Allow to refer to an item by any of its words.
-                string[] nameParts = name.Split();
-
-                foreach (string namepart in nameParts)
-                {
-                    //Don't override already assigned words
-                    if (ItemIdsByName.ContainsKey(namepart)) continue;
-
-                    ItemIdsByName[namepart] = itemEntry.Key;
-                }
-            }
-        }
-
-        InitializeItemState();
-
-        static void InitializeItemState()
-        {
-            // Set all Items to their starting locations.
-            foreach (KeyValuePair<ItemId, ItemData> itemEntry in ItemsData)
-            {
-                ItemsLocations[itemEntry.Key] = itemEntry.Value.StartingLocationId;
-            }
-        }
+        //Initialize starting state
+        InitializeStartingState();
 
         // Display title screen
         string title = File.ReadAllText("Title.txt");
@@ -635,21 +641,18 @@ internal class Program
         Console.ReadKey();
         Console.Clear();
 
-        // Display intro.
+        // Display intro
         Console.ForegroundColor = NarrativeColor;
         Print("This is the placeholder for the intro");
         // TODO, uncomment this for playable build
         //Console.ReadKey();
         //Console.Clear();
 
-        //Game start
-        LocationData currentLocation = InitLocation();
-
         //Gameplay loop
         while (shouldQuit == false)
         {
-            DisplayLocation(currentLocation);
-            currentLocation = HandlePlayerAction(currentLocation);
+            DisplayCurrentLocation();
+            HandlePlayerAction();
         }
     }
 }

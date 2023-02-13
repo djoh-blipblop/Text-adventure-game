@@ -8,7 +8,8 @@ Description: In your inventory currently is:
 
 Entrance
 Name: Entrance
-Description: You find yourself at the entrance of the resturant. Right now only you are here. To the north in the room is a order interface. The screen glows faintly.  
+Description: You find yourself at the entrance of the resturant. Right now only you are here. To the north in the room is a order interface. The screen glows faintly.
+DetailedDescription: Testing testing.
 Directions:
 	North: OrderStation
 
@@ -43,7 +44,7 @@ Directions:
 
 Kitchen
 Name: Kitchen
-Description: You enter the Kitchen. Hanging down from the ceiling are at least 7 different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading west is labled "Waste processing". A door leading east is labled "Freezer". A door leading further north is labled "Storage".
+Description: You enter the Kitchen. Hanging down from the ceiling are at least seven different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading west is labled "Waste processing". A door leading east is labled "Freezer". A door leading further north is labled "Storage".
 Directions:
 	North: Storage
 	South: FoodDeliveryStation
