@@ -95,6 +95,9 @@ internal class Program
     static LocationData CurrentLocation = new LocationData();
     static Dictionary<ItemId, LocationId> CurrentItemLocations = new Dictionary<ItemId, LocationId>();
 
+    // goal flags
+    static bool OmarRescued;
+
     static void ReadLocationsData()
     {
         // Parse the locations file.
@@ -164,6 +167,9 @@ internal class Program
         {
             CurrentItemLocations[itemEntry.Key] = itemEntry.Value.StartingLocationId;
         }
+
+        //Set goal flags
+        OmarRescued = false;
     }
     //Parse data
     static List<ParsedData> ParseData(string filePath)
@@ -334,7 +340,13 @@ internal class Program
         {
             if (ItemIdsByName.ContainsKey(word))
             {
-                itemIds.Add(ItemIdsByName[word]);
+                ItemId itemId = ItemIdsByName[word];
+
+                if (!itemIds.Contains(itemId))
+                {
+                    itemIds.Add(itemId);
+                }
+
             }
         }
 
@@ -406,6 +418,76 @@ internal class Program
                 Print($"You can't find {ItemsData[itemId].Name}");
             }
         }
+    }
+    //A method for using items, checks where the player is at and what item they want to use
+    static void UseItems(List<ItemId> itemIds)
+    {
+        if (itemIds.Count == 0)
+        {
+            Print("Use what?");
+            return;
+        }
+
+        foreach (ItemId itemId in itemIds)
+        {
+            string itemName = ItemsData[itemId].Name;
+            if (CurrentItemLocations[itemId] != LocationId.Inventory)
+            {
+                Print($"I don't have {itemName}");
+                continue;
+            }
+            //Try to use the item
+            bool useItemHandled = false;
+
+            switch (itemId)
+            {
+                case ItemId.Hamburger:
+                    useItemHandled = HandleUseHamburger();
+                    break;
+
+                case ItemId.AICore:
+                    useItemHandled = HandleUseAICore();
+                    break;
+            }
+
+
+            //report failure 
+            if (!useItemHandled)
+            {
+                Print($"I don't know how im supposed to use {itemName} right now");
+            }
+        }
+
+
+
+
+
+
+        //I've already used {itemName} like that
+
+        //Sucess!!!
+
+
+    }
+
+    static bool HandleUseAICore()
+    {
+        if (CurrentLocation.Id != LocationId.ShippingBay)
+        {
+            return false;
+        }
+
+        OmarRescued = true;
+        Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the entrance doors. " +
+            "The drone hums as it briefly turns its camera towards you before turning and flying away");
+        CurrentItemLocations[ItemId.AICore] = LocationId.Nowhere;
+        return true;
+    }
+
+    static bool HandleUseHamburger()
+    {
+        Print("I'm not hungry right now");
+        return true;
     }
 
     //Gives the player of a list of things they can try to do in the game
@@ -592,7 +674,7 @@ internal class Program
                 break;
 
             case "use":
-                // to do
+                UseItems(itemIds);
                 break;
 
             case "combine":
