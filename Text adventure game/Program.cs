@@ -43,8 +43,8 @@ enum ItemId
 enum NPCId
 {
     CleanBot,
-    FRED,
-    OMAR,
+    Fred,
+    Omar,
 }
 internal class Program
 {
@@ -53,6 +53,7 @@ internal class Program
     const ConsoleColor PromptColor = ConsoleColor.White;
     const ConsoleColor PlayerColor = ConsoleColor.DarkGray;
     const ConsoleColor HelpColor = ConsoleColor.Red;
+    const ConsoleColor SystemColor = ConsoleColor.Blue;
     const int PrintPauseMilliseconds = 800;
 
     //Data classes
@@ -63,7 +64,6 @@ internal class Program
         public string Description = string.Empty;
         public string DetailedDescription = string.Empty;
         public Dictionary<Direction, LocationId> Directions = new Dictionary<Direction, LocationId>();
-
     }
     class ItemData
     {
@@ -97,6 +97,18 @@ internal class Program
 
     // goal flags
     static bool OmarRescued;
+    static bool FredDestroyed;
+    static bool OmarDestroyed;
+
+    //Door / Ventilation "doors locked or unlocked" flags
+    static bool FreezerServerRoomVentUnlocked;
+    static bool BathRoomToWasteProcessingVentUnlocked;
+    static bool WasterProcessingToBathroomVentUnlocked;
+    static bool ServerRoomDoorUnlocked;
+    static bool KitchenDoorUnlocked;
+
+    //inital state for the "quit" flag
+    static bool shouldQuit = false;
 
     static void ReadLocationsData()
     {
@@ -167,10 +179,22 @@ internal class Program
         {
             CurrentItemLocations[itemEntry.Key] = itemEntry.Value.StartingLocationId;
         }
-
         //Set goal flags
         OmarRescued = false;
+        OmarDestroyed = false;
+        FredDestroyed = false;
+
+        //Set door flags
+        FreezerServerRoomVentUnlocked = false;
+        BathRoomToWasteProcessingVentUnlocked = false;
+        WasterProcessingToBathroomVentUnlocked = false;
+        ServerRoomDoorUnlocked = false;
+        KitchenDoorUnlocked = false;
+
     }
+
+
+
     //Parse data
     static List<ParsedData> ParseData(string filePath)
     {
@@ -346,7 +370,6 @@ internal class Program
                 {
                     itemIds.Add(itemId);
                 }
-
             }
         }
 
@@ -419,6 +442,7 @@ internal class Program
             }
         }
     }
+
     //A method for using items, checks where the player is at and what item they want to use
     static void UseItems(List<ItemId> itemIds)
     {
@@ -433,7 +457,7 @@ internal class Program
             string itemName = ItemsData[itemId].Name;
             if (CurrentItemLocations[itemId] != LocationId.Inventory)
             {
-                Print($"I don't have {itemName}");
+                Print($"I don't have a {itemName}");
                 continue;
             }
             //Try to use the item
@@ -448,25 +472,52 @@ internal class Program
                 case ItemId.AICore:
                     useItemHandled = HandleUseAICore();
                     break;
-            }
 
+                case ItemId.MixedExplosive:
+                    useItemHandled = HandleUseMixedExplosive();
+                    break;
+
+                case ItemId.MultiTool:
+                    //TODO
+                    break;
+
+                case ItemId.KeyCard:
+                    //TODO
+                    break;
+            }
 
             //report failure 
             if (!useItemHandled)
             {
-                Print($"I don't know how im supposed to use {itemName} right now");
+                Print($"I don't know how I'm supposed to use the {itemName} right now");
             }
         }
 
-
-
-
-
-
         //I've already used {itemName} like that
 
-        //Sucess!!!
+        //Success!!!
 
+
+    }
+
+    static bool HandleUseMixedExplosive()
+    {
+        if (CurrentLocation.Id != LocationId.ServerRoom)
+        {
+            Print("Explosions are fun and all, but I shouldn't set this off here. What would be the point?");
+            return false;
+        }
+
+        if (CurrentItemLocations[ItemId.AICore] == LocationId.ServerRoom)
+        {
+            OmarDestroyed = true;
+        }
+
+        FredDestroyed = true;
+        CurrentItemLocations[ItemId.MixedExplosive] = LocationId.Nowhere;
+        Print("You set the explosion and run out of the server room. A few moments pass before a low loud bang is heard, followed by clanking metal scraps hitting the floor");
+        SwitchLocation(LocationId.Storage);
+        return true;
 
     }
 
@@ -474,11 +525,17 @@ internal class Program
     {
         if (CurrentLocation.Id != LocationId.ShippingBay)
         {
+            if (CurrentLocation.Id == LocationId.ServerRoom)
+            {
+                Print("You install the AI-core back where you grabbed it. It starts blinking like before");
+                CurrentItemLocations[ItemId.AICore] = LocationId.ServerRoom;
+                return true;
+            }
+
             return false;
         }
-
         OmarRescued = true;
-        Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the entrance doors. " +
+        Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the entrance doors." +
             "The drone hums as it briefly turns its camera towards you before turning and flying away");
         CurrentItemLocations[ItemId.AICore] = LocationId.Nowhere;
         return true;
@@ -486,7 +543,7 @@ internal class Program
 
     static bool HandleUseHamburger()
     {
-        Print("I'm not hungry right now");
+        Print("I might need this if I don't get out of here soon. Better save it for later");
         return true;
     }
 
@@ -512,6 +569,27 @@ internal class Program
     //Method for moving between locations
     static void SwitchLocation(LocationId destinationLocationId)
     {
+        bool GoFromTo(LocationId a, LocationId b)
+        {
+            return CurrentLocation.Id == a && destinationLocationId == b;
+        }
+
+        bool GoBetween(LocationId a, LocationId b)
+        {
+            return GoFromTo(a, b) || GoFromTo(b, a);
+        }
+
+        if (GoBetween(LocationId.Kitchen, LocationId.FoodDeliveryStation) && !KitchenDoorUnlocked)
+        {
+            Print("The door is locked");
+            return;
+        }
+
+        if (GoFromTo(LocationId.BathRoom, LocationId.WasteProcessing) && !BathRoomToWasteProcessingVentUnlocked)
+        {
+            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before trying to crawl trough");
+            return;
+        }
         CurrentLocation = LocationsData[destinationLocationId];
     }
 
@@ -531,9 +609,6 @@ internal class Program
             //TODO uncomment for play build
         }
     }
-
-    //inital state for the "quit" flag
-    static bool shouldQuit = false;
 
     // Bundle all the prompt styling and handling, return the user input as a string
     static string Prompt()
@@ -693,10 +768,27 @@ internal class Program
 
             case "quit":
             case "exit":
-                //TODO create a confirmation for playable build, to avoid players quiting when they want to "exit" a room with no other directions then the one they came from
+                Console.ForegroundColor = SystemColor;
+                Print("Do you want to quit the game? YES or NO");
+                string confirmation = (Console.ReadLine() ?? string.Empty).ToLowerInvariant();
 
-                Print("Goodbye!");
-                shouldQuit = true;
+
+                if (confirmation == "yes")
+                {
+                    Print("Goodbye!");
+                    shouldQuit = true;
+
+                }
+                else if (confirmation == "no")
+                {
+                    Print("Okay, let's continue");
+
+                }
+                else
+                {
+                    Print("I didn't understand what you meant, so let's continue");
+                }
+
                 break;
 
             default:
@@ -716,6 +808,8 @@ internal class Program
 
         //Initialize starting state
         InitializeStartingState();
+
+
 
         // Display title screen
         string title = File.ReadAllText("Title.txt");
