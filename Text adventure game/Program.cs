@@ -99,11 +99,12 @@ internal class Program
     static bool OmarRescued;
     static bool FredDestroyed;
     static bool OmarDestroyed;
+    static bool EntranceUnlocked;
 
     //Door / Ventilation "doors locked or unlocked" flags
     static bool FreezerServerRoomVentUnlocked;
     static bool BathRoomToWasteProcessingVentUnlocked;
-    static bool WasterProcessingToBathroomVentUnlocked;
+    static bool WasteProcessingToBathroomVentUnlocked;
     static bool ServerRoomDoorUnlocked;
     static bool KitchenDoorUnlocked;
 
@@ -183,17 +184,15 @@ internal class Program
         OmarRescued = false;
         OmarDestroyed = false;
         FredDestroyed = false;
+        EntranceUnlocked = false;
 
         //Set door flags
         FreezerServerRoomVentUnlocked = false;
         BathRoomToWasteProcessingVentUnlocked = false;
-        WasterProcessingToBathroomVentUnlocked = false;
+        WasteProcessingToBathroomVentUnlocked = false;
         ServerRoomDoorUnlocked = false;
         KitchenDoorUnlocked = false;
-
     }
-
-
 
     //Parse data
     static List<ParsedData> ParseData(string filePath)
@@ -436,6 +435,7 @@ internal class Program
                 CurrentItemLocations[itemId] = LocationId.Inventory;
                 Print($"You picked up {ItemsData[itemId].Name}");
             }
+            //TODO make a way to check if the player already has the same type of item in inventory, and tell them they already have it.
             else
             {
                 Print($"You can't find {ItemsData[itemId].Name}");
@@ -478,12 +478,12 @@ internal class Program
                     break;
 
                 case ItemId.MultiTool:
-                    //TODO
+                    useItemHandled = HandleUseMultiTool();
                     break;
 
-                case ItemId.KeyCard:
-                    //TODO
-                    break;
+                    //case ItemId.KeyCard:
+                    //TODO maybe isnt really nescessary
+                    // break;
             }
 
             //report failure 
@@ -500,6 +500,27 @@ internal class Program
 
     }
 
+    static bool HandleUseMultiTool()
+    {
+        if (CurrentLocation.Id == LocationId.BathRoom && !BathRoomToWasteProcessingVentUnlocked)
+        {
+            Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            BathRoomToWasteProcessingVentUnlocked = true;
+            return true;
+        }
+
+        if (CurrentLocation.Id == LocationId.WasteProcessing && !WasteProcessingToBathroomVentUnlocked)
+        {
+            Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            WasteProcessingToBathroomVentUnlocked = true;
+            return true;
+        }
+
+        //TODO Make the case where you use the tool to help cleanBot get unstuck.
+
+        return false;
+    }
+
     static bool HandleUseMixedExplosive()
     {
         if (CurrentLocation.Id != LocationId.ServerRoom)
@@ -511,6 +532,7 @@ internal class Program
         if (CurrentItemLocations[ItemId.AICore] == LocationId.ServerRoom)
         {
             OmarDestroyed = true;
+            EntranceUnlocked = true;
         }
 
         FredDestroyed = true;
@@ -535,6 +557,7 @@ internal class Program
             return false;
         }
         OmarRescued = true;
+        EntranceUnlocked = true;
         Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the entrance doors." +
             "The drone hums as it briefly turns its camera towards you before turning and flying away");
         CurrentItemLocations[ItemId.AICore] = LocationId.Nowhere;
@@ -569,6 +592,7 @@ internal class Program
     //Method for moving between locations
     static void SwitchLocation(LocationId destinationLocationId)
     {
+        //Helpers
         bool GoFromTo(LocationId a, LocationId b)
         {
             return CurrentLocation.Id == a && destinationLocationId == b;
@@ -579,6 +603,7 @@ internal class Program
             return GoFromTo(a, b) || GoFromTo(b, a);
         }
 
+        //Cases for locked doors/vents
         if (GoBetween(LocationId.Kitchen, LocationId.FoodDeliveryStation) && !KitchenDoorUnlocked)
         {
             Print("The door is locked");
@@ -587,9 +612,65 @@ internal class Program
 
         if (GoFromTo(LocationId.BathRoom, LocationId.WasteProcessing) && !BathRoomToWasteProcessingVentUnlocked)
         {
-            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before trying to crawl trough");
+            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
             return;
         }
+
+        if (GoFromTo(LocationId.BathRoom, LocationId.WasteProcessing) && !WasteProcessingToBathroomVentUnlocked)
+        {
+            WasteProcessingToBathroomVentUnlocked = true;
+            Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room");
+        }
+
+        if (GoFromTo(LocationId.WasteProcessing, LocationId.BathRoom) && !WasteProcessingToBathroomVentUnlocked)
+        {
+            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            return;
+        }
+
+        if (GoFromTo(LocationId.WasteProcessing, LocationId.BathRoom) && !BathRoomToWasteProcessingVentUnlocked)
+        {
+            BathRoomToWasteProcessingVentUnlocked = true;
+            Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room");
+        }
+        //TODO fix so that the vent is unlocked when that happens in one location so that automaticly remove the vent cover at the destination IF the player moves through
+
+        if (GoFromTo(LocationId.Freezer, LocationId.ServerRoom) && !FreezerServerRoomVentUnlocked)
+        {
+            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            return;
+        }
+
+        if (GoFromTo(LocationId.Storage, LocationId.ServerRoom) && !ServerRoomDoorUnlocked)
+        {
+            Print("The Security door leading to the Data center is sealed. It will take much more than just pushing real hard to get it open. Maybe there is another way in?");
+            return;
+        }
+
+        if (GoFromTo(LocationId.ServerRoom, LocationId.Storage))
+        {
+            ServerRoomDoorUnlocked = true;
+            Print("You find the lever to unseal the security door from inside. The door is now open and you can keep exploring");
+        }
+
+        if (GoFromTo(LocationId.OrderStation, LocationId.Entrance) && !EntranceUnlocked)
+        {
+            Print("The entrance is locked. You try to pull at the doors but they won't budge a millimeter");
+            return;
+        }
+
+        if (GoFromTo(LocationId.WasteProcessing, LocationId.ShippingBay) && CurrentItemLocations[ItemId.KeyCard] != LocationId.Inventory)
+        {
+            Print("The door is locked. There is a card reader on the side of the door thats blinking, maybe I need some kind of key or card?");
+            return;
+        }
+
+        if (GoFromTo(LocationId.Storage, LocationId.ShippingBay) && CurrentItemLocations[ItemId.KeyCard] != LocationId.Inventory)
+        {
+            Print("The door is locked. There is a card reader on the side of the door thats blinking, maybe I need some kind of keycard or password?");
+            return;
+        }
+
         CurrentLocation = LocationsData[destinationLocationId];
     }
 
@@ -772,7 +853,6 @@ internal class Program
                 Print("Do you want to quit the game? YES or NO");
                 string confirmation = (Console.ReadLine() ?? string.Empty).ToLowerInvariant();
 
-
                 if (confirmation == "yes")
                 {
                     Print("Goodbye!");
@@ -808,8 +888,6 @@ internal class Program
 
         //Initialize starting state
         InitializeStartingState();
-
-
 
         // Display title screen
         string title = File.ReadAllText("Title.txt");
