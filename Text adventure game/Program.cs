@@ -613,12 +613,12 @@ internal class Program
                 break;
 
             case 1:
-                Print("I only have one thing that I could possibly combine with something else, I need to look around more");
+                Print($"I only have one thing, the {avalibleItemsToCombine[0]}, that I could possibly combine with something else, I need to look around more");
                 Console.ReadKey();
                 break;
 
             case 2:
-                Print("It's a good start with these two, I just need something more");
+                Print($"It's a good start with these two, the {avalibleItemsToCombine[0]} and the {avalibleItemsToCombine[1]}. I just need something more");
                 Console.ReadKey();
                 break;
 
@@ -742,6 +742,7 @@ internal class Program
             Console.ReadKey();
             return;
         }
+        //TODO make a little message to signify that the player used the key card as they go into the shipping bay.
 
         CurrentLocation = LocationsData[destinationLocationId];
     }
