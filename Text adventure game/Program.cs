@@ -396,35 +396,47 @@ internal class Program
     }
 
     //Let's the player take a closer look at things they are carrying, useful for hints about what to use the item for and for worldbuilding
-    static void InspectItem(string[] words, List<ItemId> itemIds)
+    static void InspectItem(List<ItemId> itemIds)
     {
-        if (ItemAt(itemIds[0], LocationId.Inventory))
+        if (itemIds.Count > 0)
         {
-            Print(GetName(itemIds[0]));
-            Print(GetDescription(itemIds[0]));
+            if (ItemAt(itemIds[0], LocationId.Inventory))
+            {
+                Print(GetName(itemIds[0]));
+                Print(GetDescription(itemIds[0]));
+                Console.ReadKey();
+            }
+            else
+            {
+                //TODO maybe change this to not include spoilers? IDK your choice
+                Print($"You are not carrying {GetName(itemIds[0])}");
+            }
         }
         else
         {
-            Print("You are not carrying that");
+            Print("I don't know what that is");
         }
     }
 
     //Method for trying to pick up items
     static void GetItems(List<ItemId> itemIds)
     {
+        //TODO Make a function to check if the player is already carrying the item they are trying to pick up and tell them that
         IEnumerable<ItemId> itemsAtThisLocation = GetItemsAtLocation(CurrentLocation.Id);
 
         List<ItemId> avalibleItemsToGet = ItemsYouCanGet.Intersect(itemsAtThisLocation).ToList();
 
         if (avalibleItemsToGet.Count() == 0)
         {
-            Print("There is nothing here that you can pick up");
+            Print("There is nothing in this room that you can pick up");
+            Console.ReadKey();
             return;
         }
 
         if (itemIds.Count == 0)
         {
             Print("Get what?");
+            Console.ReadKey();
             return;
         }
 
@@ -433,12 +445,13 @@ internal class Program
             if (avalibleItemsToGet.Contains(itemId))
             {
                 CurrentItemLocations[itemId] = LocationId.Inventory;
-                Print($"You picked up {ItemsData[itemId].Name}");
+                Print($"You picked up the {ItemsData[itemId].Name}");
+                Console.ReadKey();
             }
-            //TODO make a way to check if the player already has the same type of item in inventory, and tell them they already have it.
             else
             {
                 Print($"You can't find {ItemsData[itemId].Name}");
+                Console.ReadKey();
             }
         }
     }
@@ -505,6 +518,7 @@ internal class Program
         if (CurrentLocation.Id == LocationId.BathRoom && !BathRoomToWasteProcessingVentUnlocked)
         {
             Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            Console.ReadKey();
             BathRoomToWasteProcessingVentUnlocked = true;
             return true;
         }
@@ -512,7 +526,16 @@ internal class Program
         if (CurrentLocation.Id == LocationId.WasteProcessing && !WasteProcessingToBathroomVentUnlocked)
         {
             Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            Console.ReadKey();
             WasteProcessingToBathroomVentUnlocked = true;
+            return true;
+        }
+
+        if (CurrentLocation.Id == LocationId.Freezer && !FreezerServerRoomVentUnlocked)
+        {
+            Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            Console.ReadKey();
+            FreezerServerRoomVentUnlocked = true;
             return true;
         }
 
@@ -526,6 +549,7 @@ internal class Program
         if (CurrentLocation.Id != LocationId.ServerRoom)
         {
             Print("Explosions are fun and all, but I shouldn't set this off here. What would be the point?");
+            Console.ReadKey();
             return false;
         }
 
@@ -539,6 +563,7 @@ internal class Program
         CurrentItemLocations[ItemId.MixedExplosive] = LocationId.Nowhere;
         Print("You set the explosion and run out of the server room. A few moments pass before a low loud bang is heard, followed by clanking metal scraps hitting the floor");
         SwitchLocation(LocationId.Storage);
+        Console.ReadKey();
         return true;
 
     }
@@ -551,6 +576,7 @@ internal class Program
             {
                 Print("You install the AI-core back where you grabbed it. It starts blinking like before");
                 CurrentItemLocations[ItemId.AICore] = LocationId.ServerRoom;
+                Console.ReadKey();
                 return true;
             }
 
@@ -561,13 +587,49 @@ internal class Program
         Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the entrance doors." +
             "The drone hums as it briefly turns its camera towards you before turning and flying away");
         CurrentItemLocations[ItemId.AICore] = LocationId.Nowhere;
+        Console.ReadKey();
         return true;
     }
 
     static bool HandleUseHamburger()
     {
         Print("I might need this if I don't get out of here soon. Better save it for later");
+        Console.ReadKey();
         return true;
+    }
+
+    //A method for trying to combine items
+    static void CombineItems(List<ItemId> itemIds)
+    {
+        IEnumerable<ItemId> itemsInInventory = GetItemsAtLocation(LocationId.Inventory);
+
+        List<ItemId> avalibleItemsToCombine = ItemsYouCanCombine.Intersect(itemsInInventory).ToList();
+
+        switch (avalibleItemsToCombine.Count)
+        {
+            case 0:
+                Print("I don't have anything with me that I can combine with something else");
+                Console.ReadKey();
+                break;
+
+            case 1:
+                Print("I only have one thing that I could possibly combine with something else, I need to look around more");
+                Console.ReadKey();
+                break;
+
+            case 2:
+                Print("It's a good start with these two, I just need something more");
+                Console.ReadKey();
+                break;
+
+            case 3:
+                Print("That's it!");
+                Console.ReadKey();
+                break;
+
+        }
+
+
     }
 
     //Gives the player of a list of things they can try to do in the game
@@ -607,12 +669,14 @@ internal class Program
         if (GoBetween(LocationId.Kitchen, LocationId.FoodDeliveryStation) && !KitchenDoorUnlocked)
         {
             Print("The door is locked");
+            Console.ReadKey();
             return;
         }
 
         if (GoFromTo(LocationId.BathRoom, LocationId.WasteProcessing) && !BathRoomToWasteProcessingVentUnlocked)
         {
             Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            Console.ReadKey();
             return;
         }
 
@@ -620,11 +684,13 @@ internal class Program
         {
             WasteProcessingToBathroomVentUnlocked = true;
             Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room");
+            Console.ReadKey();
         }
 
         if (GoFromTo(LocationId.WasteProcessing, LocationId.BathRoom) && !WasteProcessingToBathroomVentUnlocked)
         {
             Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            Console.ReadKey();
             return;
         }
 
@@ -632,17 +698,20 @@ internal class Program
         {
             BathRoomToWasteProcessingVentUnlocked = true;
             Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room");
+            Console.ReadKey();
         }
 
         if (GoFromTo(LocationId.Freezer, LocationId.ServerRoom) && !FreezerServerRoomVentUnlocked)
         {
             Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            Console.ReadKey();
             return;
         }
 
         if (GoFromTo(LocationId.Storage, LocationId.ServerRoom) && !ServerRoomDoorUnlocked)
         {
             Print("The Security door leading to the Data center is sealed. It will take much more than just pushing real hard to get it open. Maybe there is another way in?");
+            Console.ReadKey();
             return;
         }
 
@@ -650,23 +719,27 @@ internal class Program
         {
             ServerRoomDoorUnlocked = true;
             Print("You find the lever to unseal the security door from inside. The door is now open and you can keep exploring");
+            Console.ReadKey();
         }
 
         if (GoFromTo(LocationId.OrderStation, LocationId.Entrance) && !EntranceUnlocked)
         {
-            Print("The entrance is locked. You try to pull at the doors but they won't budge a millimeter");
+            Print("The entrance is locked. You try to pull at the doors as hard as you can but they won't budge a millimeter");
+            Console.ReadKey();
             return;
         }
 
         if (GoFromTo(LocationId.WasteProcessing, LocationId.ShippingBay) && CurrentItemLocations[ItemId.KeyCard] != LocationId.Inventory)
         {
             Print("The door is locked. There is a card reader on the side of the door thats blinking, maybe I need some kind of key or card?");
+            Console.ReadKey();
             return;
         }
 
         if (GoFromTo(LocationId.Storage, LocationId.ShippingBay) && CurrentItemLocations[ItemId.KeyCard] != LocationId.Inventory)
         {
             Print("The door is locked. There is a card reader on the side of the door thats blinking, maybe I need some kind of keycard or password?");
+            Console.ReadKey();
             return;
         }
 
@@ -812,7 +885,7 @@ internal class Program
             case "inspect":
                 if (words.Length > 1)
                 {
-                    InspectItem(words, itemIds);
+                    InspectItem(itemIds);
                 }
                 else
                 {
@@ -833,7 +906,7 @@ internal class Program
                 break;
 
             case "combine":
-                // to do
+                CombineItems(itemIds);
                 break;
 
             case "talk":
