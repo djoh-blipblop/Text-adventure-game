@@ -633,7 +633,6 @@ internal class Program
             BathRoomToWasteProcessingVentUnlocked = true;
             Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room");
         }
-        //TODO fix so that the vent is unlocked when that happens in one location so that automaticly remove the vent cover at the destination IF the player moves through
 
         if (GoFromTo(LocationId.Freezer, LocationId.ServerRoom) && !FreezerServerRoomVentUnlocked)
         {
