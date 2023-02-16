@@ -48,7 +48,7 @@ enum NPCId
 }
 internal class Program
 {
-    //UI elements, colors and textspeed etc
+    // UI elements, colors and textspeed etc
     const ConsoleColor NarrativeColor = ConsoleColor.Green;
     const ConsoleColor PromptColor = ConsoleColor.White;
     const ConsoleColor PlayerColor = ConsoleColor.DarkGray;
@@ -56,7 +56,7 @@ internal class Program
     const ConsoleColor SystemColor = ConsoleColor.Blue;
     const int PrintPauseMilliseconds = 800;
 
-    //Data classes
+    // Data classes
     class LocationData
     {
         public LocationId Id;
@@ -68,6 +68,14 @@ internal class Program
     class ItemData
     {
         public ItemId id;
+        public string Name = string.Empty;
+        public string Description = string.Empty;
+        public LocationId StartingLocationId;
+    }
+
+    class NPCData
+    {
+        public NPCId id;
         public string Name = string.Empty;
         public string Description = string.Empty;
         public LocationId StartingLocationId;
@@ -85,30 +93,33 @@ internal class Program
     // Data dictionaries
     static Dictionary<LocationId, LocationData> LocationsData = new Dictionary<LocationId, LocationData>();
     static Dictionary<ItemId, ItemData> ItemsData = new Dictionary<ItemId, ItemData>();
+    static Dictionary<NPCId, NPCData> NPCsData = new Dictionary<NPCId, NPCData>();
 
-    //helpers
+    // Helpers
     static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
     static ItemId[] ItemsYouCanGet = { ItemId.KeyCard, ItemId.Hamburger, ItemId.Ice, ItemId.AICore, ItemId.Chlorine, ItemId.DroneBattery, };
     static ItemId[] ItemsYouCanCombine = { ItemId.Ice, ItemId.Chlorine, ItemId.DroneBattery, };
+    static NPCId[] NPCsYouCanTalkTo = { NPCId.Omar, NPCId.CleanBot, NPCId.Fred, };
 
     // Current state
     static LocationData CurrentLocation = new LocationData();
     static Dictionary<ItemId, LocationId> CurrentItemLocations = new Dictionary<ItemId, LocationId>();
+    static Dictionary<NPCId, LocationId> CurrentNPCLocations = new Dictionary<NPCId, LocationId>();
 
-    // goal flags
+    // Goal flags
     static bool OmarRescued;
     static bool FredDestroyed;
     static bool OmarDestroyed;
     static bool EntranceUnlocked;
 
-    //Door / Ventilation "doors locked or unlocked" flags
+    // Door / Ventilation "doors locked or unlocked" flags
     static bool FreezerServerRoomVentUnlocked;
     static bool BathRoomToWasteProcessingVentUnlocked;
     static bool WasteProcessingToBathroomVentUnlocked;
     static bool ServerRoomDoorUnlocked;
     static bool KitchenDoorUnlocked;
 
-    //inital state for the "quit" flag
+    // inital state for the "quit" flag
     static bool shouldQuit = false;
 
     static void ReadLocationsData()
@@ -133,7 +144,7 @@ internal class Program
     }
     static void ReadItemData()
     {
-        //Parse the item file
+        // Parse the item file
         List<ParsedData> parsedDataList = ParseData("ItemData.txt");
 
         // Transfer data from the parsed structures into items data
@@ -151,6 +162,27 @@ internal class Program
         }
     }
 
+    static void ReadNPCData()
+    {
+        // Parse the NPC file
+        List<ParsedData> parsedDataList = ParseData("NpcData.txt");
+
+        // Transfer data from the parsed structures into NPC data
+        foreach (ParsedData parsedData in parsedDataList)
+        {
+            NPCId npcId = Enum.Parse<NPCId>(parsedData.Id);
+            NPCData npcData = new NPCData
+            {
+                id = npcId,
+                Name = parsedData.Name,
+                Description = parsedData.Description,
+                StartingLocationId = parsedData.StartingLocationId,
+            };
+            NPCsData[npcId] = npcData;
+        }
+    }
+
+
     static void InitalizeItemHelpers()
     {
         // Create a map of items by their name
@@ -163,7 +195,7 @@ internal class Program
 
             foreach (string namepart in nameParts)
             {
-                //Don't override already assigned words
+                // Don't override already assigned words
                 if (ItemIdsByName.ContainsKey(namepart)) continue;
 
                 ItemIdsByName[namepart] = itemEntry.Key;
@@ -172,7 +204,7 @@ internal class Program
     }
     static void InitializeStartingState()
     {
-        //Set player starting location
+        // Set player starting location
         CurrentLocation = LocationsData[LocationId.Entrance];
 
         // Set all Items to their starting locations.
@@ -180,13 +212,20 @@ internal class Program
         {
             CurrentItemLocations[itemEntry.Key] = itemEntry.Value.StartingLocationId;
         }
-        //Set goal flags
+
+        // Set all NPCs to their starting locations
+        foreach (KeyValuePair<NPCId, NPCData> npcEntry in NPCsData)
+        {
+            CurrentNPCLocations[npcEntry.Key] = npcEntry.Value.StartingLocationId;
+        }
+
+        // Set goal flags
         OmarRescued = false;
         OmarDestroyed = false;
         FredDestroyed = false;
         EntranceUnlocked = false;
 
-        //Set door flags
+        // Set door flags
         FreezerServerRoomVentUnlocked = false;
         BathRoomToWasteProcessingVentUnlocked = false;
         WasteProcessingToBathroomVentUnlocked = false;
@@ -194,7 +233,7 @@ internal class Program
         KitchenDoorUnlocked = false;
     }
 
-    //Parse data
+    // Parse data
     static List<ParsedData> ParseData(string filePath)
     {
         var parsedDataList = new List<ParsedData>();
@@ -301,6 +340,7 @@ internal class Program
     //This method display additional text about the location, if there is any, when the player uses the "LOOK" command
     static void DisplayLookText(LocationData currentLocation)
     {
+        //TODO expand this to include if there are items in the location, and which npc that are there
         Console.ForegroundColor = NarrativeColor;
         if (currentLocation.DetailedDescription != null)
         {
@@ -395,7 +435,7 @@ internal class Program
         }
     }
 
-    //Let's the player take a closer look at things they are carrying, useful for hints about what to use the item for and for worldbuilding
+    //Lets the player take a closer look at things they are carrying, useful for hints about what to use the item for and for worldbuilding
     static void InspectItem(List<ItemId> itemIds)
     {
         if (itemIds.Count > 0)
@@ -494,9 +534,6 @@ internal class Program
                     useItemHandled = HandleUseMultiTool();
                     break;
 
-                    //case ItemId.KeyCard:
-                    //TODO maybe isnt really nescessary
-                    // break;
             }
 
             //report failure 
@@ -625,11 +662,15 @@ internal class Program
             case 3:
                 Print("That's it!");
                 Console.ReadKey();
+                Print("I have combined the items into an explosive!");
+                CurrentItemLocations[ItemId.DroneBattery] = LocationId.Nowhere;
+                CurrentItemLocations[ItemId.Chlorine] = LocationId.Nowhere;
+                CurrentItemLocations[ItemId.Ice] = LocationId.Nowhere;
+                CurrentItemLocations[ItemId.MixedExplosive] = LocationId.Inventory;
+                Console.ReadKey();
                 break;
 
         }
-
-
     }
 
     //Gives the player of a list of things they can try to do in the game
@@ -715,7 +756,7 @@ internal class Program
             return;
         }
 
-        if (GoFromTo(LocationId.ServerRoom, LocationId.Storage))
+        if (GoFromTo(LocationId.ServerRoom, LocationId.Storage) && !ServerRoomDoorUnlocked)
         {
             ServerRoomDoorUnlocked = true;
             Print("You find the lever to unseal the security door from inside. The door is now open and you can keep exploring");
@@ -742,8 +783,12 @@ internal class Program
             Console.ReadKey();
             return;
         }
-        //TODO make a little message to signify that the player used the key card as they go into the shipping bay.
 
+        if (GoBetween(LocationId.Storage, LocationId.ShippingBay) || GoBetween(LocationId.ShippingBay, LocationId.WasteProcessing) && CurrentItemLocations[ItemId.KeyCard] == LocationId.Inventory)
+        {
+            Print("You hold up the key card to the reader. It emits of a short \"beep\" sound and you hear the door unlock");
+            Console.ReadKey();
+        }
         CurrentLocation = LocationsData[destinationLocationId];
     }
 
@@ -955,6 +1000,7 @@ internal class Program
         //Initalizing data
         ReadLocationsData();
         ReadItemData();
+        ReadNPCData();
 
         //Initalizing stuff for handling items
         InitalizeItemHelpers();
