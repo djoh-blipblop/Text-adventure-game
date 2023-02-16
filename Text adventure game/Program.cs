@@ -327,13 +327,13 @@ internal class Program
     static void DisplayCurrentLocation()
     {
         //TODO uncomment this for play build, to limit the amount of text on screen, makes the description more current.
-        //Console.Clear();
+        Console.Clear();
 
         Console.ForegroundColor = NarrativeColor;
 
         // Display current location description.
         //TODO comment away the location name for the playable build, it ruins immersion
-        Print(CurrentLocation.Name);
+        //Print(CurrentLocation.Name);
         Print(CurrentLocation.Description);
     }
 
@@ -342,9 +342,10 @@ internal class Program
     {
         //TODO expand this to include if there are items in the location, and which npc that are there
         Console.ForegroundColor = NarrativeColor;
-        if (currentLocation.DetailedDescription != null)
+        if (currentLocation.DetailedDescription != string.Empty)
         {
             Print(currentLocation.DetailedDescription);
+            Console.ReadKey();
         }
         else
         {
@@ -789,6 +790,12 @@ internal class Program
             Print("You hold up the key card to the reader. It emits of a short \"beep\" sound and you hear the door unlock");
             Console.ReadKey();
         }
+
+        //If the player has unlocked the entrance, check the victory condition and display victory screen
+        if (GoFromTo(LocationId.OrderStation, LocationId.Entrance) && EntranceUnlocked)
+        {
+            //TODO implement victory conditions
+        }
         CurrentLocation = LocationsData[destinationLocationId];
     }
 
@@ -804,7 +811,7 @@ internal class Program
         foreach (Match match in lineMatches)
         {
             Console.WriteLine(match.Groups[0].Value);
-            //Thread.Sleep(PrintPauseMilliseconds); 
+            Thread.Sleep(PrintPauseMilliseconds);
             //TODO uncomment for play build
         }
     }
