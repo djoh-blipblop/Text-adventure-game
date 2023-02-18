@@ -182,7 +182,6 @@ internal class Program
         }
     }
 
-
     static void InitalizeItemHelpers()
     {
         // Create a map of items by their name
@@ -358,13 +357,6 @@ internal class Program
     {
         if (!CurrentItemLocations.ContainsKey(itemId)) return false;
         return CurrentItemLocations[itemId] == locationId;
-    }
-
-    //This lets the game check if an NPC is at the location
-    static bool NPCAt(NPCId npcId, LocationId locationId)
-    {
-        if (!CurrentNPCLocations.ContainsKey(npcId)) return false;
-        return CurrentNPCLocations[npcId] == locationId;
     }
 
     //This lets the game know where items are
@@ -584,8 +576,7 @@ internal class Program
             return true;
         }
 
-        //TODO Make the case where you use the tool to help cleanBot get unstuck.
-        if (CurrentLocation.Id == LocationId.CleanBotBay && NPCAt(NPCId.CleanBot, LocationId.CleanBotBay))
+        if (CurrentLocation.Id == LocationId.CleanBotBay && CurrentNPCLocations[NPCId.CleanBot] == LocationId.CleanBotBay)
         {
             Print("You use your multi-tool to help CleanBot get his motivator unstuck");
             //TODO Make a little Dialogue with CleanBot for helping him get unstuck.
