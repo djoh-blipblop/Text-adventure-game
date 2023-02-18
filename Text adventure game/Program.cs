@@ -360,6 +360,13 @@ internal class Program
         return CurrentItemLocations[itemId] == locationId;
     }
 
+    //This lets the game check if an NPC is at the location
+    static bool NPCAt(NPCId npcId, LocationId locationId)
+    {
+        if (!CurrentNPCLocations.ContainsKey(npcId)) return false;
+        return CurrentNPCLocations[npcId] == locationId;
+    }
+
     //This lets the game know where items are
     static IEnumerable<ItemId> GetItemsAtLocation(LocationId locationId)
     {
@@ -578,6 +585,17 @@ internal class Program
         }
 
         //TODO Make the case where you use the tool to help cleanBot get unstuck.
+        if (CurrentLocation.Id == LocationId.CleanBotBay && NPCAt(NPCId.CleanBot, LocationId.CleanBotBay))
+        {
+            Print("You use your multi-tool to help CleanBot get his motivator unstuck");
+            //TODO Make a little Dialogue with CleanBot for helping him get unstuck.
+            Console.ReadKey();
+            Print("CleanBot whirrs away");
+            CurrentNPCLocations[NPCId.CleanBot] = LocationId.BathRoom;
+            Console.ReadKey();
+            Print("It left behind a small plasic cylinder of chlorine, you can probably pick that up if you want");
+            return true;
+        }
 
         return false;
     }
@@ -963,7 +981,7 @@ internal class Program
                 break;
 
             case "talk":
-                // to do
+                //TODO
                 break;
 
             case "help":
