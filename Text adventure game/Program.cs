@@ -1033,6 +1033,12 @@ internal class Program
         CurrentLocation = LocationsData[destinationLocationId];
     }
 
+    //Method for handling talking to NPC
+    static void TalkTo(LocationData currentLocation)
+    {
+        throw new NotImplementedException();
+    }
+
     //Method for displaying text, uses the UI elements to make the text print in the right colour etc.
     static void Print(string text)
     {
@@ -1207,7 +1213,7 @@ internal class Program
 
             case "talk":
             case "speak":
-                //TODO
+                TalkTo(CurrentLocation);
                 break;
 
             case "help":
@@ -1249,6 +1255,8 @@ internal class Program
                 break;
         }
     }
+
+
 
     private static void Main(string[] args)
     {
