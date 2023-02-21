@@ -93,7 +93,7 @@ Directions:
 
 ShippingBay
 Name: Shipping Bay
-Description: Here is the Shipping bay. A brisk wind is coming in trough the roll down covers leading outside. There are two loading/unloading stations here, as well as a offline drone laying on the floor. This must be where the goods are delivered to the resturant you think to yourself. A door leading east is labeled "Storage". A door leading south has a small card reader next to it. It's blinking. The door is labeled "Waste processing"
+Description: Here is the Shipping bay. A brisk wind is coming in trough the roll-down covers leading outside. There are two loading/unloading stations here, as well as a offline drone laying on the floor. This must be where the goods are delivered to the resturant you think to yourself. A door leading east is labeled "Storage". A door leading south has a small card reader next to it. It's blinking. The door is labeled "Waste processing"
 DetailedDescription:
 Directions:
 	South: WasteProcessing

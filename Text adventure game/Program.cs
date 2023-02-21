@@ -339,7 +339,7 @@ internal class Program
         // Display current location description.
         //TODO comment away the location name for the playable build, it ruins immersion
 
-        Print(CurrentLocation.Name);
+        //Print(CurrentLocation.Name);
         Print(CurrentLocation.Description);
     }
 
