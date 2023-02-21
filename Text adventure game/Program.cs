@@ -119,6 +119,9 @@ internal class Program
     static bool ServerRoomDoorUnlocked;
     static bool KitchenDoorUnlocked;
 
+    // flag to check if the player has helped CleanBot
+    static bool CleanBotUnstuck;
+
     // inital state for the "quit" flag
     static bool shouldQuit = false;
 
@@ -230,6 +233,9 @@ internal class Program
         WasteProcessingToBathroomVentUnlocked = false;
         ServerRoomDoorUnlocked = false;
         KitchenDoorUnlocked = false;
+
+        // Set status of CleanBot
+        CleanBotUnstuck = false;
     }
 
     // Parse data
@@ -326,29 +332,210 @@ internal class Program
     static void DisplayCurrentLocation()
     {
         //TODO uncomment this for play build, to limit the amount of text on screen, makes the description more current.
-        Console.Clear();
+        //Console.Clear();
 
         Console.ForegroundColor = NarrativeColor;
 
         // Display current location description.
         //TODO comment away the location name for the playable build, it ruins immersion
-        //Print(CurrentLocation.Name);
+
+        Print(CurrentLocation.Name);
         Print(CurrentLocation.Description);
     }
 
     //This method display additional text about the location, if there is any, when the player uses the "LOOK" command
     static void DisplayLookText(LocationData currentLocation)
     {
-        //TODO expand this to include if there are items in the location, and which npc that are there
         Console.ForegroundColor = NarrativeColor;
-        if (currentLocation.DetailedDescription != string.Empty)
+
+        void PrintDefaultLookText()
         {
-            Print(currentLocation.DetailedDescription);
+            if (currentLocation.DetailedDescription != string.Empty)
+            {
+                Print(currentLocation.DetailedDescription);
+            }
+            else
+            {
+                Print("There is nothing else really noteworthy or interesting here.");
+            }
             Console.ReadKey();
         }
-        else
+
+
+        switch (currentLocation.Id)
         {
-            Print("There is nothing really noteworthy or interesting here.");
+
+            //TODO expand this to include if there are items in the location, and which npc that are there
+            case LocationId.Entrance:
+                if (!EntranceUnlocked)
+                {
+                    Print("The doors out of the resturant are locked tight");
+                    PrintDefaultLookText();
+                }
+                else
+                {
+                    Print("The doors are unlocked now. I can leave if I want to");
+                    PrintDefaultLookText();
+                }
+                break;
+
+            case LocationId.OrderStation:
+                Print("I Could maybe talk to the order manager at the interface");
+                PrintDefaultLookText();
+                break;
+
+            case LocationId.EatingArea:
+                PrintDefaultLookText();
+                break;
+
+            case LocationId.BathRoom:
+                if (!BathRoomToWasteProcessingVentUnlocked)
+                {
+                    Print("On the wall is a quite large air vent cover, with a faint humming noise emitting from it. The cover looks a bit loose. Maybe I can unscrew it somehow");
+                    Console.ReadKey();
+                }
+                if (CleanBotUnstuck)
+                {
+                    Print("The cleaning robot I helped earlier is here, cleaning. I could talk to it if I want. It looks a bit busy though");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    PrintDefaultLookText();
+                }
+                break;
+
+            case LocationId.FoodDeliveryStation:
+                if (!KitchenDoorUnlocked)
+                {
+                    Print("The doors are locked. I can't open them. I will have to find another way past them");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Print("The doors are unlocked now, I can go trough");
+                    PrintDefaultLookText();
+                }
+                break;
+
+            case LocationId.Kitchen:
+                if (!ItemAt(ItemId.Hamburger, LocationId.Inventory))
+                {
+                    Print("There is a hamburger here that seems to be ready to serve. I could grab it with me I suppose");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    PrintDefaultLookText();
+                }
+                break;
+
+            case LocationId.Freezer:
+                if (!ItemAt(ItemId.Ice, LocationId.Inventory))
+                {
+                    Print("I could grab some of the ice that's here. I don't know what I would need it for though...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    PrintDefaultLookText();
+                }
+                break;
+
+            case LocationId.WasteProcessing:
+                if (!ItemAt(ItemId.KeyCard, LocationId.Inventory))
+                {
+                    Print("I could probably get through the security door if I could just find the key");
+                    PrintDefaultLookText();
+                }
+                if (ItemAt(ItemId.KeyCard, LocationId.Inventory))
+                {
+                    Print("With the key card I found, I can probably go through security door");
+                    PrintDefaultLookText();
+                }
+                break;
+
+            case LocationId.Storage:
+                PrintDefaultLookText();
+                break;
+
+            case LocationId.CleanBotBay:
+                if (!CleanBotUnstuck)
+                {
+                    Print("Theres a cleaning robot here. It seems to be struggling, maybe it's having problems? It looks a bit stressed. I could talk to it I guess");
+                    Console.ReadKey();
+                }
+                if (CleanBotUnstuck)
+                {
+                    Print("The robot left in a hurry. It looks like it dropped something. A bottle of chlorine? I could take it with me");
+                    Console.ReadKey();
+                }
+
+                PrintDefaultLookText();
+                break;
+
+            case LocationId.ShippingBay:
+                if (!ItemAt(ItemId.DroneBattery, LocationId.Inventory))
+                {
+                    Print("The offline drone has its battery hatch open. I could probably take the battery if I wanted to use it for something");
+                    Console.ReadKey();
+                }
+
+                if (ItemAt(ItemId.AICore, LocationId.Inventory))
+                {
+                    Print("The outside door to the shipping bay is open, and a active drone is hovering there in the air. Its camera is facing away from you and it's loading dock" +
+                        "is open. There are some cables there that look like they could plug into Omar's core if I wanted to help him escape");
+                    Console.ReadKey();
+                }
+
+                PrintDefaultLookText();
+                break;
+
+            case LocationId.ServerRoom:
+
+                if (!FredDestroyed)
+                {
+                    Print("The small glowing screen looks like some kind of interface, maybe I can talk to someone through it?");
+                    Console.ReadKey();
+                }
+
+                if (ItemAt(ItemId.AICore, LocationId.ServerRoom))
+                {
+                    Print("The one computer component that is blinking green must be Omar's core. I could get it to get him out of here");
+                    Console.ReadKey();
+                }
+
+                if (!ItemAt(ItemId.AICore, LocationId.ServerRoom))
+                {
+                    Print("There is an empty space now wherer Omar's core was. I could put him back I guess if I wanted to");
+                    Console.ReadKey();
+                }
+
+                if (!ItemAt(ItemId.KeyCard, LocationId.Inventory))
+                {
+                    Print("There is a plastic card with a little chip laying on one of the server racks. Maybe it's some kind of access card or key? I should get it, I might need it");
+                    Console.ReadKey();
+                }
+
+                if (!ServerRoomDoorUnlocked)
+                {
+                    Print("There's a big mechanical lever on the inside of the door to open it up. Some kind of security measure? I could unseal the door by walking out that way");
+                    Console.ReadKey();
+                }
+
+                if (FredDestroyed)
+                {
+                    Print("The room has been demolished. Scraps of metal, buzzing wires and smoke fills the room. I should probably hold my breath aswell");
+                }
+
+
+                break;
+
+            case LocationId.Nowhere:
+                PrintDefaultLookText();
+                Print("Also this is really fucked up. I really don't get how you got here. Turn around now");
+                break;
+
         }
     }
 
@@ -387,8 +574,8 @@ internal class Program
         return ItemsData[itemId].Description;
     }
 
-    //Gets the starting location of an item
-    static LocationId GetItemLocation(ItemId itemId)
+    //Gets the starting location of an item for debugging purpouses
+    static LocationId GetItemStartingLocation(ItemId itemId)
     {
         return ItemsData[itemId].StartingLocationId;
     }
@@ -425,6 +612,7 @@ internal class Program
         if (itemsInInventory.Count() == 0)
         {
             Print("nothing.");
+            Console.ReadKey();
         }
         else
         {
@@ -432,6 +620,7 @@ internal class Program
             {
                 Print($"{GetName(itemId)}.");
             }
+            Console.ReadKey();
         }
     }
 
@@ -450,11 +639,13 @@ internal class Program
             {
                 //TODO maybe change this to not include spoilers? IDK your choice
                 Print($"You are not carrying {GetName(itemIds[0])}");
+                Console.ReadKey();
             }
         }
         else
         {
             Print("I don't know what that is");
+            Console.ReadKey();
         }
     }
 
@@ -484,6 +675,13 @@ internal class Program
         {
             if (avalibleItemsToGet.Contains(itemId))
             {
+                if (itemId == ItemId.Chlorine && !CleanBotUnstuck)
+                {
+                    Print("The Chlorine bottle is stuck underneath Cleanbot");
+                    Console.ReadKey();
+                    return;
+                }
+
                 CurrentItemLocations[itemId] = LocationId.Inventory;
                 Print($"You picked up the {ItemsData[itemId].Name}");
                 Console.ReadKey();
@@ -502,6 +700,7 @@ internal class Program
         if (itemIds.Count == 0)
         {
             Print("Use what?");
+            Console.ReadKey();
             return;
         }
 
@@ -511,6 +710,7 @@ internal class Program
             if (CurrentItemLocations[itemId] != LocationId.Inventory)
             {
                 Print($"I don't have a {itemName}");
+                Console.ReadKey();
                 continue;
             }
             //Try to use the item
@@ -540,14 +740,12 @@ internal class Program
             if (!useItemHandled)
             {
                 Print($"I don't know how I'm supposed to use the {itemName} right now");
+                Console.ReadKey();
             }
         }
-
+        //TODO
         //I've already used {itemName} like that
-
         //Success!!!
-
-
     }
 
     static bool HandleUseMultiTool()
@@ -583,8 +781,10 @@ internal class Program
             Console.ReadKey();
             Print("CleanBot whirrs away");
             CurrentNPCLocations[NPCId.CleanBot] = LocationId.BathRoom;
+            CleanBotUnstuck = true;
             Console.ReadKey();
             Print("It left behind a small plasic cylinder of chlorine, you can probably pick that up if you want");
+            Console.ReadKey();
             return true;
         }
 
@@ -820,8 +1020,8 @@ internal class Program
         foreach (Match match in lineMatches)
         {
             Console.WriteLine(match.Groups[0].Value);
-            Thread.Sleep(PrintPauseMilliseconds);
             //TODO uncomment for play build
+            Thread.Sleep(PrintPauseMilliseconds);
         }
     }
 
@@ -881,6 +1081,7 @@ internal class Program
                         else
                         {
                             Print("You can't go north from here");
+                            Console.ReadKey();
                         }
                         break;
 
@@ -893,6 +1094,7 @@ internal class Program
                         else
                         {
                             Print("You can't go south from here");
+                            Console.ReadKey();
                         }
                         break;
 
@@ -905,6 +1107,7 @@ internal class Program
                         else
                         {
                             Print("You can't go east from here");
+                            Console.ReadKey();
                         }
                         break;
 
@@ -917,11 +1120,13 @@ internal class Program
                         else
                         {
                             Print("You can't go west from here");
+                            Console.ReadKey();
                         }
                         break;
 
                     default:
                         Print("Go where?");
+                        Console.ReadKey();
                         break;
                 }
                 break;
@@ -936,6 +1141,7 @@ internal class Program
                 else
                 {
                     Print("There isn't anything to climb into here");
+                    Console.ReadKey();
                 }
                 break;
 
@@ -952,6 +1158,7 @@ internal class Program
                 else
                 {
                     Print("Inspect what?");
+                    Console.ReadKey();
                 }
                 break;
 
@@ -977,7 +1184,7 @@ internal class Program
 
             case "help":
                 DisplayHelp();
-                Console.ReadLine();
+                Console.ReadKey();
                 Console.Clear();
                 break;
 
@@ -990,23 +1197,27 @@ internal class Program
                 if (confirmation == "yes")
                 {
                     Print("Goodbye!");
+                    Console.ReadKey();
                     shouldQuit = true;
 
                 }
                 else if (confirmation == "no")
                 {
                     Print("Okay, let's continue");
+                    Console.ReadKey();
 
                 }
                 else
                 {
                     Print("I didn't understand what you meant, so let's continue");
+                    Console.ReadKey();
                 }
 
                 break;
 
             default:
                 Print("I do not understand you.");
+                Console.ReadKey();
                 break;
         }
     }
@@ -1034,8 +1245,8 @@ internal class Program
         Console.ForegroundColor = NarrativeColor;
         Print("This is the placeholder for the intro");
         // TODO, uncomment this for playable build
-        //Console.ReadKey();
-        //Console.Clear();
+        Console.ReadKey();
+        Console.Clear();
 
         //Gameplay loop
         while (shouldQuit == false)
