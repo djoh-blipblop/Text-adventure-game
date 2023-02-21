@@ -67,7 +67,7 @@ Directions:
 
 WasteProcessing
 Name: Waste Processing
-Description: You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the western wall is an air vent cover. Its emitting a faint noise.
+Description: You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the western wall is an air vent cover. Its emitting a faint noise. To the east is a door labeled "Kitchen".
 DetailedDescription:
 Directions:
 	North: ShippingBay

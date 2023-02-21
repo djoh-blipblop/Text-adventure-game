@@ -54,7 +54,16 @@ internal class Program
     const ConsoleColor PlayerColor = ConsoleColor.DarkGray;
     const ConsoleColor HelpColor = ConsoleColor.Red;
     const ConsoleColor SystemColor = ConsoleColor.Blue;
-    const int PrintPauseMilliseconds = 800;
+    const int PrintPauseMilliseconds = 400;
+
+    //method to clear key inputs
+    static void ClearBuffer()
+    {
+        while (Console.KeyAvailable)
+        {
+            Console.ReadKey(false);
+        }
+    }
 
     // Data classes
     class LocationData
@@ -465,10 +474,14 @@ internal class Program
                     Print("Theres a cleaning robot here. It seems to be struggling, maybe it's having problems? It looks a bit stressed. I could talk to it I guess");
                     Console.ReadKey();
                 }
-                if (CleanBotUnstuck)
+                if (CleanBotUnstuck && ItemAt(ItemId.Chlorine, LocationId.CleanBotBay))
                 {
                     Print("The robot left in a hurry. It looks like it dropped something. A bottle of chlorine? I could take it with me");
                     Console.ReadKey();
+                }
+                if (CleanBotUnstuck)
+                {
+                    Print("The robot left in a hurry, I wonder where it went?");
                 }
 
                 PrintDefaultLookText();
@@ -527,7 +540,6 @@ internal class Program
                 {
                     Print("The room has been demolished. Scraps of metal, buzzing wires and smoke fills the room. I should probably hold my breath aswell");
                 }
-
 
                 break;
 
@@ -821,10 +833,17 @@ internal class Program
         {
             if (CurrentLocation.Id == LocationId.ServerRoom)
             {
-                Print("You install the AI-core back where you grabbed it. It starts blinking like before");
-                CurrentItemLocations[ItemId.AICore] = LocationId.ServerRoom;
+                if (!FredDestroyed)
+                {
+                    Print("You install the AI-core back where you grabbed it. It starts blinking like before");
+                    CurrentItemLocations[ItemId.AICore] = LocationId.ServerRoom;
+                    Console.ReadKey();
+                    return true;
+                }
+
+                Print("You can't really put back Omar's core in the destroyed server rack...");
                 Console.ReadKey();
-                return true;
+                return false;
             }
 
             return false;
@@ -860,12 +879,12 @@ internal class Program
                 break;
 
             case 1:
-                Print($"I only have one thing, the {avalibleItemsToCombine[0]}, that I could possibly combine with something else, I need to look around more");
+                Print($"I only have one thing, the {GetName(avalibleItemsToCombine[0])}, that I could possibly combine with something else, I need to look around more");
                 Console.ReadKey();
                 break;
 
             case 2:
-                Print($"It's a good start with these two, the {avalibleItemsToCombine[0]} and the {avalibleItemsToCombine[1]}. I just need something more");
+                Print($"It's a good start with these two, the {GetName(avalibleItemsToCombine[0])} and the {GetName(avalibleItemsToCombine[1])}. I just need something more");
                 Console.ReadKey();
                 break;
 
@@ -998,6 +1017,12 @@ internal class Program
         {
             Print("You hold up the key card to the reader. It emits of a short \"beep\" sound and you hear the door unlock");
             Console.ReadKey();
+
+            if (ItemAt(ItemId.AICore, LocationId.Inventory))
+            {
+                Print("You hear the humming noise of a drone nearby. Is there a delivery coming?");
+                Console.ReadKey();
+            }
         }
 
         //If the player has unlocked the entrance, check the victory condition and display victory screen
@@ -1167,6 +1192,8 @@ internal class Program
                 break;
 
             case "get":
+            case "pick":
+            case "take":
                 GetItems(itemIds);
                 break;
 
@@ -1179,6 +1206,7 @@ internal class Program
                 break;
 
             case "talk":
+            case "speak":
                 //TODO
                 break;
 
@@ -1243,7 +1271,7 @@ internal class Program
 
         // Display intro
         Console.ForegroundColor = NarrativeColor;
-        Print("This is the placeholder for the intro");
+        Print("This is the placeholder for the intro. I haven't written it yet, but just *IMAGINE* flowing poetic prose completly creating verisimilitude with the setting. OMG, it's like you're really there!");
         // TODO, uncomment this for playable build
         Console.ReadKey();
         Console.Clear();
@@ -1252,6 +1280,7 @@ internal class Program
         while (shouldQuit == false)
         {
             DisplayCurrentLocation();
+            ClearBuffer();
             HandlePlayerAction();
         }
     }
