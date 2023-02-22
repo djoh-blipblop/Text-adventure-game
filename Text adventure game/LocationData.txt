@@ -77,7 +77,7 @@ Directions:
 Storage
 Name: Storage
 Description: You've entered the storage room of the resturant. A lot of boxes are here, on shelves and stacked on the ground. Reading some of the labels you find reciept paper, spices and other various items are stored here. On a door to the west is a small card reader. It's blinking. The label over the door says "Shipping bay". On the door leading north there is a sign labled "CleanBot(TM) Bay". The door leading east is labeled "Data Center". The door leading south says "Kitchen".
-DetailedDescription:
+DetailedDescription: There's a old banana stand here. You remember HappyEating Co having an ad running for bananas a while back, maybe there's some money in it?
 Directions:
 	North: CleanBotBay
 	South: Kitchen

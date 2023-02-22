@@ -42,3 +42,8 @@ AICore
 Name: Omar's AI core
 Description: This slightly spherical computer part is containing the resturants order manager AI. He wants to be free. It's emitting a rythmical hum from inside. 
 StartingLocation: ServerRoom
+
+Money
+Name: Money
+Description: Currency. Cash. A store of value, medium of exchange and unit of account. Probably one of mankinds best or worst inventions depending on who you ask. Found in the banana stand. There's always money in the banana stand. 
+StartingLocation: Storage

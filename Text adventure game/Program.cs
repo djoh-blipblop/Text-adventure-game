@@ -38,6 +38,7 @@ enum ItemId
     DroneBattery,
     MixedExplosive,
     AICore,
+    Money,
 }
 
 enum NPCId
@@ -106,7 +107,7 @@ internal class Program
 
     // Helpers
     static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
-    static ItemId[] ItemsYouCanGet = { ItemId.KeyCard, ItemId.Hamburger, ItemId.Ice, ItemId.AICore, ItemId.Chlorine, ItemId.DroneBattery, };
+    static ItemId[] ItemsYouCanGet = { ItemId.KeyCard, ItemId.Hamburger, ItemId.Ice, ItemId.AICore, ItemId.Chlorine, ItemId.DroneBattery, ItemId.Money };
     static ItemId[] ItemsYouCanCombine = { ItemId.Ice, ItemId.Chlorine, ItemId.DroneBattery, };
     static NPCId[] NPCsYouCanTalkTo = { NPCId.Omar, NPCId.CleanBot, NPCId.Fred, };
 
@@ -342,13 +343,13 @@ internal class Program
     {
         //TODO uncomment this for play build, to limit the amount of text on screen, makes the description more current.
         //Console.Clear();
-
         Console.ForegroundColor = NarrativeColor;
 
         // Display current location description.
         //TODO comment away the location name for the playable build, it ruins immersion
-
         //Print(CurrentLocation.Name);
+        //TODO make a switch statement with updated descriptions if vents are unscrewed/kicked down and if Server room was blown up
+
         Print(CurrentLocation.Description);
     }
 
@@ -518,7 +519,7 @@ internal class Program
                     Console.ReadKey();
                 }
 
-                if (!ItemAt(ItemId.AICore, LocationId.ServerRoom))
+                if (!ItemAt(ItemId.AICore, LocationId.ServerRoom) && !FredDestroyed)
                 {
                     Print("There is an empty space now wherer Omar's core was. I could put him back I guess if I wanted to");
                     Console.ReadKey();
@@ -1013,7 +1014,7 @@ internal class Program
             return;
         }
 
-        if (GoBetween(LocationId.Storage, LocationId.ShippingBay) || GoBetween(LocationId.ShippingBay, LocationId.WasteProcessing) && CurrentItemLocations[ItemId.KeyCard] == LocationId.Inventory)
+        if (GoFromTo(LocationId.Storage, LocationId.ShippingBay) || GoFromTo(LocationId.WasteProcessing, LocationId.ShippingBay) && CurrentItemLocations[ItemId.KeyCard] == LocationId.Inventory)
         {
             Print("You hold up the key card to the reader. It emits of a short \"beep\" sound and you hear the door unlock");
             Console.ReadKey();
@@ -1030,6 +1031,7 @@ internal class Program
         {
             //TODO implement victory conditions
         }
+
         CurrentLocation = LocationsData[destinationLocationId];
     }
 
