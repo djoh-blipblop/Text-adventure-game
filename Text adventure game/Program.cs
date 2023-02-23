@@ -1235,7 +1235,7 @@ internal class Program
 
             case "talk":
             case "speak":
-                TalkTo(CurrentLocation);
+                // TalkTo(CurrentLocation);
                 break;
 
             case "help":
