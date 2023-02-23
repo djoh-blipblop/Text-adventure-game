@@ -195,7 +195,7 @@ internal class Program
         }
     }
 
-    static void InitalizeItemHelpers()
+    static void InitializeItemHelpers()
     {
         // Create a map of items by their name
         foreach (KeyValuePair<ItemId, ItemData> itemEntry in ItemsData)
@@ -348,7 +348,22 @@ internal class Program
         // Display current location description.
         //TODO comment away the location name for the playable build, it ruins immersion
         //Print(CurrentLocation.Name);
-        //TODO make a switch statement with updated descriptions if vents are unscrewed/kicked down and if Server room was blown up
+
+        if (CurrentLocation.Id == LocationId.BathRoom && BathRoomToWasteProcessingVentUnlocked)
+        {
+            Print("The bathroom is clean and neat. There is a toilet and a sink on the wall, with a mirror above the sink. There's an airvent cover laying on the ground");
+            return;
+        }
+        if (CurrentLocation.Id == LocationId.WasteProcessing && WasteProcessingToBathroomVentUnlocked)
+        {
+            Print("You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the floor next to the western wall is an air vent cover. Its emitting a faint noise. To the east is a door labeled \"Kitchen\".");
+            return;
+        }
+        if (CurrentLocation.Id == LocationId.ServerRoom && FredDestroyed)
+        {
+            Print("The room has been damaged by the explosion, it's hard to see things clearly trough the smoke. The air vent to the freezer is bringing in some fresh air. The server racks are damaged and the interface that was on earlier is now black, its screen cracked and broken");
+            return;
+        }
 
         Print(CurrentLocation.Description);
     }
@@ -370,7 +385,6 @@ internal class Program
             }
             Console.ReadKey();
         }
-
 
         switch (currentLocation.Id)
         {
@@ -690,7 +704,7 @@ internal class Program
             {
                 if (itemId == ItemId.Chlorine && !CleanBotUnstuck)
                 {
-                    Print("The Chlorine bottle is stuck underneath Cleanbot");
+                    Print("The Chlorine bottle is stuck underneath Cleanbot, I can't get it out");
                     Console.ReadKey();
                     return;
                 }
@@ -1248,6 +1262,30 @@ internal class Program
                     Print("I didn't understand what you meant, so let's continue");
                     Console.ReadKey();
                 }
+                break;
+
+            case "restart":
+                Console.ForegroundColor = SystemColor;
+                Print("Do you want to restart the game? YES or NO");
+                confirmation = (Console.ReadLine() ?? string.Empty).ToLowerInvariant();
+                if (confirmation == "yes")
+                {
+                    Print("Okay, let's start over");
+                    Console.ReadKey();
+                    Restart();
+
+                }
+                else if (confirmation == "no")
+                {
+                    Print("Okay, let's continue");
+                    Console.ReadKey();
+
+                }
+                else
+                {
+                    Print("I didn't understand what you meant, so let's continue");
+                    Console.ReadKey();
+                }
 
                 break;
 
@@ -1258,6 +1296,10 @@ internal class Program
         }
     }
 
+    static void Restart()
+    {
+        InitializeStartingState();
+    }
 
 
     private static void Main(string[] args)
@@ -1268,7 +1310,7 @@ internal class Program
         ReadNPCData();
 
         //Initalizing stuff for handling items
-        InitalizeItemHelpers();
+        InitializeItemHelpers();
 
         //Initialize starting state
         InitializeStartingState();
@@ -1282,7 +1324,6 @@ internal class Program
         // Display intro
         Console.ForegroundColor = NarrativeColor;
         Print("This is the placeholder for the intro. I haven't written it yet, but just *IMAGINE* flowing poetic prose completly creating verisimilitude with the setting. OMG, it's like you're really there!");
-        // TODO, uncomment this for playable build
         Console.ReadKey();
         Console.Clear();
 
