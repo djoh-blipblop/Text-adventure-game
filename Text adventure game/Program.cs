@@ -1055,6 +1055,12 @@ internal class Program
         throw new NotImplementedException();
     }
 
+    //Method for restarting the game
+    static void Restart()
+    {
+        InitializeStartingState();
+    }
+
     //Method for displaying text, uses the UI elements to make the text print in the right colour etc.
     static void Print(string text)
     {
@@ -1273,7 +1279,6 @@ internal class Program
                     Print("Okay, let's start over");
                     Console.ReadKey();
                     Restart();
-
                 }
                 else if (confirmation == "no")
                 {
@@ -1286,7 +1291,6 @@ internal class Program
                     Print("I didn't understand what you meant, so let's continue");
                     Console.ReadKey();
                 }
-
                 break;
 
             default:
@@ -1295,12 +1299,6 @@ internal class Program
                 break;
         }
     }
-
-    static void Restart()
-    {
-        InitializeStartingState();
-    }
-
 
     private static void Main(string[] args)
     {
