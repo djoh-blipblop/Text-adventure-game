@@ -1328,6 +1328,7 @@ internal class Program
         //Gameplay loop
         while (shouldQuit == false)
         {
+            ClearBuffer();
             DisplayCurrentLocation();
             ClearBuffer();
             HandlePlayerAction();
