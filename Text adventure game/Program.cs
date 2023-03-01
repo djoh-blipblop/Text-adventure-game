@@ -67,6 +67,19 @@ internal class Program
     }
 
     // Data classes
+    class NpcDialogueNodes
+    {
+        public string id = string.Empty;
+        public string prompt = string.Empty;
+        public List<AnswersData> answers = new List<AnswersData>();
+    }
+
+    class AnswersData
+    {
+        public string Answer = string.Empty;
+        public NpcDialogueNodes Destination;
+    }
+
     class LocationData
     {
         public LocationId Id;
@@ -89,6 +102,7 @@ internal class Program
         public string Name = string.Empty;
         public string Description = string.Empty;
         public LocationId StartingLocationId;
+        public string DialogueNode = string.Empty;
     }
     class ParsedData
     {
@@ -98,12 +112,14 @@ internal class Program
         public string DetailedDescription = string.Empty;
         public Dictionary<Direction, LocationId> Directions = new Dictionary<Direction, LocationId>();
         public LocationId StartingLocationId;
+        public string StartingDialogueNode = string.Empty;
     }
 
     // Data dictionaries
     static Dictionary<LocationId, LocationData> LocationsData = new Dictionary<LocationId, LocationData>();
     static Dictionary<ItemId, ItemData> ItemsData = new Dictionary<ItemId, ItemData>();
     static Dictionary<NPCId, NPCData> NPCsData = new Dictionary<NPCId, NPCData>();
+    static Dictionary<string, NpcDialogueNodes> npcDialogueNodes = new Dictionary<string, NpcDialogueNodes>();
 
     // Helpers
     static Dictionary<string, ItemId> ItemIdsByName = new Dictionary<string, ItemId>();
@@ -135,6 +151,7 @@ internal class Program
     // inital state for the "quit" flag
     static bool shouldQuit = false;
 
+    //Methods for reading the different data
     static void ReadLocationsData()
     {
         // Parse the locations file.
@@ -174,7 +191,6 @@ internal class Program
             ItemsData[itemId] = itemData;
         }
     }
-
     static void ReadNPCData()
     {
         // Parse the NPC file
@@ -190,11 +206,13 @@ internal class Program
                 Name = parsedData.Name,
                 Description = parsedData.Description,
                 StartingLocationId = parsedData.StartingLocationId,
+                DialogueNode = parsedData.StartingDialogueNode,
             };
             NPCsData[npcId] = npcData;
         }
     }
 
+    //Methods for initalizing helpers and setting the starting state of the game
     static void InitializeItemHelpers()
     {
         // Create a map of items by their name
@@ -323,6 +341,10 @@ internal class Program
                     case "StartingLocation":
                         parsedData.StartingLocationId = Enum.Parse<LocationId>(value);
                         break;
+
+                    case "StartingDialogueNode":
+                        parsedData.StartingDialogueNode = value;
+                        break;
                 }
 
                 currentLineIndex++;
@@ -337,6 +359,73 @@ internal class Program
 
         return parsedDataList;
     }
+
+    //parse dialogue data
+    static void ReadDialogueData(string filePath)
+    {
+        string[] dataLines = File.ReadAllLines(filePath);
+        var currentLineIndex = 0;
+        //Parse dialogue data until we reach the end.
+        NpcDialogueNodes currentDialogueNode = new NpcDialogueNodes();
+
+
+        while (currentLineIndex < dataLines.Length)
+        {
+            MatchCollection matches = Regex.Matches(dataLines[currentLineIndex], @"(\w+): *(.*)?");
+            if (matches.Count != 0)
+            {
+                string property = matches[0].Groups[1].Value;
+                string value = matches[0].Groups[2]?.Value ?? string.Empty;
+
+                switch (property)
+                {
+                    case "Id":
+                        npcDialogueNodes.Add(value, new NpcDialogueNodes() { id = value });
+                        currentDialogueNode = npcDialogueNodes[value];
+                        break;
+
+                    case "Prompt":
+                        currentDialogueNode.prompt = value;
+                        break;
+                }
+            }
+            currentLineIndex++;
+        }
+
+        currentLineIndex = 0;
+        while (currentLineIndex < dataLines.Length)
+        {
+            MatchCollection matches = Regex.Matches(dataLines[currentLineIndex], @"(\w+): *(.*)?");
+            if (matches.Count != 0)
+            {
+                string property = matches[0].Groups[1].Value;
+                string value = matches[0].Groups[2]?.Value ?? string.Empty;
+
+                switch (property)
+                {
+                    case "Id":
+                        currentDialogueNode = npcDialogueNodes[value];
+                        break;
+
+                    case "A":
+                        string[] valueArray = value.Split(';');
+
+                        string valueString = valueArray[0];
+                        string valueKey = valueArray[1];
+
+                        AnswersData answer = new AnswersData() { Answer = valueString, Destination = npcDialogueNodes[valueKey] };
+                        currentDialogueNode.answers.Add(answer);
+
+                        break;
+                }
+            }
+            currentLineIndex++;
+        }
+    }
+
+
+
+
 
     //This method gives the user the text description for the location its at
     static void DisplayCurrentLocation()
@@ -1059,6 +1148,7 @@ internal class Program
     static void Restart()
     {
         InitializeStartingState();
+        DisplayIntro();
     }
 
     //Method for displaying text, uses the UI elements to make the text print in the right colour etc.
@@ -1300,12 +1390,26 @@ internal class Program
         }
     }
 
+    static void DisplayIntro()
+    {
+        Console.Clear();
+        Console.ForegroundColor = NarrativeColor;
+        string[] intro = File.ReadAllLines("Intro.txt");
+        foreach (string str in intro)
+        {
+            Print(str);
+        }
+        Console.ReadKey();
+        Console.Clear();
+    }
+
     private static void Main(string[] args)
     {
         //Initalizing data
         ReadLocationsData();
         ReadItemData();
         ReadNPCData();
+        ReadDialogueData("DialogueData.txt");
 
         //Initalizing stuff for handling items
         InitializeItemHelpers();
@@ -1320,18 +1424,19 @@ internal class Program
         Console.Clear();
 
         // Display intro
-        Console.ForegroundColor = NarrativeColor;
-        Print("This is the placeholder for the intro. I haven't written it yet, but just *IMAGINE* flowing poetic prose completly creating verisimilitude with the setting. OMG, it's like you're really there!");
-        Console.ReadKey();
-        Console.Clear();
+        DisplayIntro();
 
         //Gameplay loop
         while (shouldQuit == false)
         {
             ClearBuffer();
             DisplayCurrentLocation();
-            ClearBuffer();
             HandlePlayerAction();
         }
     }
 }
+
+
+
+
+

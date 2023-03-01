@@ -1,0 +1,12 @@
+Id: Test
+Prompt: This is the test line
+A: Cool;Test
+A: Very nice;Test2
+A: I'm impressed;Test
+A: like it very much, may I have another please?;Test
+A: Oh thank you so much.;Test
+
+Id: Test2
+Prompt: And that about wraps this up, did it work?
+
+
