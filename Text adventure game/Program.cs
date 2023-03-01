@@ -77,7 +77,7 @@ internal class Program
     class AnswersData
     {
         public string Answer = string.Empty;
-        public NpcDialogueNodes Destination;
+        public NpcDialogueNodes? Destination;
     }
 
     class LocationData
@@ -423,10 +423,6 @@ internal class Program
         }
     }
 
-
-
-
-
     //This method gives the user the text description for the location its at
     static void DisplayCurrentLocation()
     {
@@ -583,7 +579,7 @@ internal class Program
                     Print("The robot left in a hurry. It looks like it dropped something. A bottle of chlorine? I could take it with me");
                     Console.ReadKey();
                 }
-                if (CleanBotUnstuck)
+                if (CleanBotUnstuck && !ItemAt(ItemId.Chlorine, LocationId.CleanBotBay))
                 {
                     Print("The robot left in a hurry, I wonder where it went?");
                 }
@@ -662,10 +658,23 @@ internal class Program
         return CurrentItemLocations[itemId] == locationId;
     }
 
+    //This method checks if a NPC is there at the location
+    static bool NPCAt(NPCId npcId, LocationId locationId)
+    {
+        if (!CurrentNPCLocations.ContainsKey(npcId)) return false;
+        return CurrentNPCLocations[npcId] == locationId;
+    }
+
     //This lets the game know where items are
     static IEnumerable<ItemId> GetItemsAtLocation(LocationId locationId)
     {
         return CurrentItemLocations.Keys.Where(itemId => ItemAt(itemId, locationId));
+    }
+
+    //This lets the game know where NPCs are
+    static IEnumerable<NPCId> GetNPCsAtLocation(LocationId locationId)
+    {
+        return CurrentNPCLocations.Keys.Where(npcId => NPCAt(npcId, locationId));
     }
 
     //Gets the name of an item using the ItemId Enum
@@ -969,7 +978,7 @@ internal class Program
     }
 
     //A method for trying to combine items
-    static void CombineItems(List<ItemId> itemIds)
+    static void CombineItems()
     {
         IEnumerable<ItemId> itemsInInventory = GetItemsAtLocation(LocationId.Inventory);
 
@@ -1141,8 +1150,30 @@ internal class Program
     //Method for handling talking to NPC
     static void TalkTo(LocationData currentLocation)
     {
-        throw new NotImplementedException();
+        IEnumerable<NPCId> NPCsAtThisLocation = GetNPCsAtLocation(CurrentLocation.Id);
+        List<NPCId> avalibleNPCsToTalkTo = NPCsYouCanTalkTo.Intersect(NPCsAtThisLocation).ToList();
+
+        if (avalibleNPCsToTalkTo.Count() == 0)
+        {
+            Print("There is no one in this room that you can talk to");
+            Console.ReadKey();
+            return;
+        }
+        //As off now this thing only works if there is one npc, otherwise it wont work as intended. Im to dumb to figure out another way to do it.
+
+        NPCId currentTalkingNpc = avalibleNPCsToTalkTo[0];
+        string currentDialogueNode = NPCsData[currentTalkingNpc].DialogueNode;
+        Print(currentDialogueNode);
+        Console.ReadKey();
     }
+    //Find the right dialogue node for the NPC to start with
+    //Display the correct NPC node prompt and display the avalible answers
+    //Get the answer option from the player
+    //Handle any external events that arise from the chosen answer
+    //Proceed to that NPC node and display the text and answer.
+    //If there are not answers then display the final dialogue, wait for a button press and return to the game.
+
+
 
     //Method for restarting the game
     static void Restart()
@@ -1320,12 +1351,12 @@ internal class Program
                 break;
 
             case "combine":
-                CombineItems(itemIds);
+                CombineItems();
                 break;
 
             case "talk":
             case "speak":
-                // TalkTo(CurrentLocation);
+                TalkTo(CurrentLocation);
                 break;
 
             case "help":

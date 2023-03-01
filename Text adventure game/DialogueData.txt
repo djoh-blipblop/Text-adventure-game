@@ -8,5 +8,8 @@ A: Oh thank you so much.;Test
 
 Id: Test2
 Prompt: And that about wraps this up, did it work?
+A: I think so;Test3
 
+Id: Test3
+Prompt: Yes! Awesome!
 
