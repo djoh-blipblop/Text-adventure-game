@@ -136,7 +136,6 @@ internal class Program
     static bool OmarRescued;
     static bool FredDestroyed;
     static bool OmarDestroyed;
-    static bool EntranceUnlocked;
 
     // Door / Ventilation "doors locked or unlocked" flags
     static bool FreezerServerRoomVentUnlocked;
@@ -144,6 +143,7 @@ internal class Program
     static bool WasteProcessingToBathroomVentUnlocked;
     static bool ServerRoomDoorUnlocked;
     static bool KitchenDoorUnlocked;
+    static bool EntranceUnlocked;
 
     // flag to check if the player has helped CleanBot
     static bool CleanBotUnstuck;
@@ -1163,17 +1163,66 @@ internal class Program
 
         NPCId currentTalkingNpc = avalibleNPCsToTalkTo[0];
         string currentDialogueNode = NPCsData[currentTalkingNpc].DialogueNode;
-        Print(currentDialogueNode);
-        Console.ReadKey();
+
+        if (currentDialogueNode == null)
+        {
+            Print("uh oh, you fucked up somewhere");
+            Console.ReadKey();
+            return;
+        }
+
+        HandleDialogue(currentDialogueNode);
+        return;
+
     }
-    //Find the right dialogue node for the NPC to start with
-    //Display the correct NPC node prompt and display the avalible answers
-    //Get the answer option from the player
-    //Handle any external events that arise from the chosen answer
-    //Proceed to that NPC node and display the text and answer.
-    //If there are not answers then display the final dialogue, wait for a button press and return to the game.
+
+    //Method for handling dialogue
+    static void HandleDialogue(string currentDialogueNode)
+    {
+        while (npcDialogueNodes[currentDialogueNode].answers != null && npcDialogueNodes[currentDialogueNode].answers.Count > 0)
+        {
+            //Finding the prompt
+            string prompt = npcDialogueNodes[currentDialogueNode].prompt;
+
+            //Finding the answers to that prompt
+            int numberOfAnswers = npcDialogueNodes[currentDialogueNode].answers.Count;
+
+            Print(prompt);
+
+            for (int i = 0; i < numberOfAnswers; i++)
+            {
+                Print($"{i + 1}. {npcDialogueNodes[currentDialogueNode].answers[i].Answer}");
+            }
+
+            //Getting the answer from the player
+            string? playerReply = Console.ReadLine();
+            Int32.TryParse(playerReply, out int playerReplyChoice);
+
+            if (playerReplyChoice.GetType() == typeof(int) && playerReplyChoice > 0)
+            {
+                playerReplyChoice--;
+
+                //Moving to the next prompt
+                if (playerReplyChoice < numberOfAnswers)
+                {
+                    string nextDestination = npcDialogueNodes[currentDialogueNode].answers[playerReplyChoice].Destination.id;
+                    currentDialogueNode = nextDestination;
+                }
+                else
+                {
+                    Print("I'm sorry I didn't catch that, anyway as I was saying:");
+                }
+            }
+            Print("I'm sorry I didn't catch that, anyway as I was saying:");
 
 
+
+        }
+
+        Print(npcDialogueNodes[currentDialogueNode].prompt);
+        Console.ReadKey();
+        return;
+    }
 
     //Method for restarting the game
     static void Restart()
