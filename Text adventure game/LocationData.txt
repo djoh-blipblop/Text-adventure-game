@@ -33,7 +33,7 @@ Directions:
 
 BathRoom
 Name: Bathroom
-Description: The bathroom is clean and neat. There is a toilet and a sink on the wall, with a mirror above the sink.  
+Description: The bathroom has not been cleaned in a while it seems, but it's not too bad. There is a toilet and a sink on the wall, with a mirror above the sink.  
 DetailedDescription:
 Directions:
 	North: EatingArea
