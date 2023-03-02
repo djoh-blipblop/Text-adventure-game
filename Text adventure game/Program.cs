@@ -16,6 +16,7 @@ enum LocationId
     CleanBotBay,
     ShippingBay,
     ServerRoom,
+    Exit,
 }
 
 enum Direction
@@ -146,9 +147,10 @@ internal class Program
     static bool WasteProcessingToBathroomVentUnlocked;
     static bool ServerRoomDoorUnlocked;
     static bool KitchenDoorUnlocked;
-    static bool EntranceUnlocked;
+    static bool ExitDoorUnlocked;
 
-    // flag to check if the player has helped CleanBot
+    // Various state check flags
+    static bool HasTalkedToOmar;
     static bool CleanBotUnstuck;
 
     // inital state for the "quit" flag
@@ -264,10 +266,11 @@ internal class Program
         WasteProcessingToBathroomVentUnlocked = false;
         ServerRoomDoorUnlocked = false;
         KitchenDoorUnlocked = false;
-        EntranceUnlocked = false;
+        ExitDoorUnlocked = false;
 
-        // Set status of CleanBot
+        // Set status of state check flags
         CleanBotUnstuck = false;
+        HasTalkedToOmar = false;
     }
 
     // Parse data
@@ -494,7 +497,7 @@ internal class Program
 
             //TODO expand this to include if there are items in the location, and which npc that are there
             case LocationId.Entrance:
-                if (!EntranceUnlocked)
+                if (!ExitDoorUnlocked)
                 {
                     Print("The doors out of the resturant are locked tight");
                     PrintDefaultLookText();
@@ -946,7 +949,7 @@ internal class Program
         if (CurrentItemLocations[ItemId.AICore] == LocationId.ServerRoom)
         {
             OmarDestroyed = true;
-            EntranceUnlocked = true;
+            ExitDoorUnlocked = true;
         }
 
         FredDestroyed = true;
@@ -980,7 +983,7 @@ internal class Program
             return false;
         }
         OmarRescued = true;
-        EntranceUnlocked = true;
+        ExitDoorUnlocked = true;
         Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the entrance doors." +
             "The drone hums as it briefly turns its camera towards you before turning and flying away");
         CurrentItemLocations[ItemId.AICore] = LocationId.Nowhere;
@@ -1123,7 +1126,7 @@ internal class Program
             Console.ReadKey();
         }
 
-        if (GoFromTo(LocationId.OrderStation, LocationId.Entrance) && !EntranceUnlocked)
+        if (GoFromTo(LocationId.Entrance, LocationId.Exit) && !ExitDoorUnlocked)
         {
             Print("The entrance is locked. You try to pull at the doors as hard as you can but they won't budge a millimeter");
             Console.ReadKey();
@@ -1157,7 +1160,7 @@ internal class Program
         }
 
         //If the player has unlocked the entrance, check the victory condition and display victory screen
-        if (GoFromTo(LocationId.OrderStation, LocationId.Entrance) && EntranceUnlocked)
+        if (GoFromTo(LocationId.Entrance, LocationId.Exit) && ExitDoorUnlocked)
         {
             //TODO implement victory conditions
         }
@@ -1207,11 +1210,17 @@ internal class Program
             Console.ForegroundColor = NPCColor;
             Print(prompt);
 
+            Console.ForegroundColor = PromptColor;
+            Print("How would you like to respond?");
+
             Console.ForegroundColor = PlayerColor;
             for (int i = 0; i < numberOfAnswers; i++)
             {
                 Print($"{i + 1}. {npcDialogueNodes[currentDialogueNode].answers[i].Answer}");
             }
+            Console.ForegroundColor = PromptColor;
+            Console.Write("> ");
+
 
             //Getting the answer from the player
             string? playerReply = Console.ReadLine();
@@ -1233,14 +1242,15 @@ internal class Program
                 }
                 else //If the player did choose a number, but it wasn't in the list or 0, repeat.
                 {
+                    Console.ForegroundColor = NPCColor;
                     Print("I'm sorry I didn't catch that, anyway as I was saying:");
                 }
             }
 
             if (!answerIsANumber)
             {
-                Console.ForegroundColor = NPCColor;
                 //If the player didn't select an answer or wrote something else, repeat
+                Console.ForegroundColor = NPCColor;
                 Print("I'm sorry I didn't catch that, anyway as I was saying:");
             }
         }
@@ -1267,6 +1277,7 @@ internal class Program
                                       maximumLineLength + @"})(?:\s|$)");
 
         // Output each line with a small delay.
+        Console.WriteLine();
         foreach (Match match in lineMatches)
         {
             Console.WriteLine(match.Groups[0].Value);
@@ -1281,8 +1292,6 @@ internal class Program
         // Ask the player what they want to do.
         Console.ForegroundColor = PromptColor;
         Print("What now?");
-        Print("");
-
         Console.Write("> ");
 
         Console.ForegroundColor = PlayerColor;
@@ -1501,11 +1510,8 @@ internal class Program
     {
         Console.Clear();
         Console.ForegroundColor = NarrativeColor;
-        string[] intro = File.ReadAllLines("Intro.txt");
-        foreach (string str in intro)
-        {
-            Print(str);
-        }
+        string intro = File.ReadAllText("Intro.txt");
+        Print(intro);
         Console.ReadKey();
         Console.Clear();
     }

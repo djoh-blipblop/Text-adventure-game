@@ -9,10 +9,18 @@ Description: In your inventory currently is:
 
 Entrance
 Name: Entrance
-Description: You find yourself at the entrance of the resturant. Right now only you are here. To the north in the room is a order interface. The screen glows faintly.
+Description: You find yourself at the entrance of the resturant. Right now only you are here. To the north in the room is a order interface. The screen glows faintly. To the South is the exit.
 DetailedDescription:
 Directions:
 	North: OrderStation
+	South: Exit
+
+Exit
+Name: Exit
+Description: You leave the Resturant the way you entered. The air smells fresher than you remembered
+DetailedDescription:
+Directions:
+	North: Entrance
 
 OrderStation
 Name: Order station
