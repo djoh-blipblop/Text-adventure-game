@@ -1,6 +1,6 @@
 Nowhere
 Name: Nowhere
-Description: This shouldn't be here, how did you find it?
+Description: You shouldn't be here, how did you find it?
 DetailedDescription: No really, this isn't here. Why are you here? WHY ARE YOU HERE
 
 Inventory
