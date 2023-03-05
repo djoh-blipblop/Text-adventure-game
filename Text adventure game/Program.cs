@@ -682,6 +682,7 @@ internal class Program
                 if (FredDestroyed)
                 {
                     Print("The room has been demolished. Scraps of metal, buzzing wires and smoke fills the room. I should probably hold my breath aswell");
+                    Console.ReadKey();
                 }
                 if (FreezerServerRoomVentUnlocked)
                 {
