@@ -149,6 +149,7 @@ internal class Program
     static bool ExitDoorUnlocked;
 
     // Various state check flags
+    static bool HasTalkedToFred;
     static bool HasTalkedToOmar;
     static bool CleanBotUnstuck;
 
@@ -269,6 +270,7 @@ internal class Program
         // Set status of state check flags
         CleanBotUnstuck = false;
         HasTalkedToOmar = false;
+        HasTalkedToFred = false;
     }
 
     // Parse data
@@ -997,13 +999,13 @@ internal class Program
             {
                 if (!FredDestroyed)
                 {
-                    Print("You install the AI-core back where you grabbed it. It starts blinking like before");
+                    Print("I installed the AI-core back where I grabbed it. It starts blinking like before");
                     CurrentItemLocations[ItemId.AICore] = LocationId.ServerRoom;
                     Console.ReadKey();
                     return true;
                 }
 
-                Print("You can't really put back Omar's core in the destroyed server rack...");
+                Print("I can't really put back Omar's core in the destroyed server rack...");
                 Console.ReadKey();
                 return false;
             }
@@ -1163,6 +1165,18 @@ internal class Program
             {
                 Print("I should probably go talk to whomever works here to find out what's going on");
                 //TODO add the dialogue option to ask about the door to the inital omar conversation.
+            }
+
+            if (HasTalkedToOmar)
+            {
+                Print("Omar won't unlock the doors unless I help him");
+                //TODO Expand this
+            }
+
+            if (HasTalkedToFred)
+            {
+                Print("Fred said that Omar needs to be dealt with before he can regain control and unlock the doors as part of the safety protocol");
+                //TODO check this over later.
             }
             Console.ReadKey();
             return;

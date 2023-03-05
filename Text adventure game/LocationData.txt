@@ -41,7 +41,7 @@ Directions:
 
 BathRoom
 Name: Bathroom
-Description: The bathroom has not been cleaned in a while it seems, but it's not too bad. There is a toilet and a sink on the wall, with a mirror above the sink.  
+Description: The bathroom has not been cleaned in a while it seems, but it's not too bad. There is a toilet and a sink on the wall, with a mirror above the sink. To the north is the door leading to the eating area.
 DetailedDescription:
 Directions:
 	North: EatingArea
@@ -57,7 +57,7 @@ Directions:
 
 Kitchen
 Name: Kitchen
-Description: You enter the Kitchen. Hanging down from the ceiling are at least seven different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading west is labled "Waste processing". A door leading east is labled "Freezer". A door leading further north is labled "Storage".
+Description: You enter the Kitchen. Hanging down from the ceiling are at least seven different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading west is labled "Waste processing". A door leading east is labled "Freezer". A door leading further north is labled "Storage". To the South are the heavy doors leading to the order station, halfway hidden behind some idle robotic appendages.
 DetailedDescription:
 Directions:
 	North: Storage
@@ -67,7 +67,7 @@ Directions:
 
 Freezer
 Name: Freezer
-Description: You enter the freezer. In boxes around the shelves are hamburgers, fries and bread. Various other boxes must contain more food items you figure. It's cold. On the north wall is an air vent, its sucking cool air out. It looks sturdy. There are quite a lot of ice in here, it must have been a long time since the freezer was defrosted.
+Description: You enter the freezer. In boxes around the shelves are hamburgers, fries and bread. Various other boxes must contain more food items you figure. It's cold. On the north wall is an air vent, its sucking cool air out. It looks sturdy. There are quite a lot of ice in here, it must have been a long time since the freezer was defrosted. To the west is the Kitchen.
 DetailedDescription:
 Directions:
 	West: Kitchen
@@ -109,7 +109,7 @@ Directions:
 
 ServerRoom
 Name: Server Room
-Description: Racks of computer hardware are spread about the room here. Even though there is cold air coming in from a air vent on the south wall the room is very warm. Several racks have bulbous rounded computer parts attached to them. One is blinking green steadily, while the others are flashing red at various intervals. A small screen is glowing on one of the walls of the room.
+Description: Racks of computer hardware are spread about the room here. Even though there is cold air coming in from a air vent on the south wall the room is very warm. Several racks have bulbous rounded computer parts attached to them. One is blinking green steadily, while the others are flashing red at various intervals. A small screen is glowing on one of the walls of the room. To the west is a heavy-looking door.
 DetailedDescription:
 Directions:
 	West: Storage

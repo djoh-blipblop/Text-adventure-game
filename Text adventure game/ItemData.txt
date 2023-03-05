@@ -24,7 +24,7 @@ Description: A clump of ice. Frozen water some would say. It is slowly thawing a
 StartingLocation: Freezer
 
 Chlorine
-Name: Chlorine
+Name: Chlorine bottle
 Description: A chlorine base cleaning product. It's in a small plastic cylinder. A warning is written on its side: "Do not eat, drink or inhale this CleanBot (tm) product!"
 StartingLocation: CleanBotBay
 
