@@ -152,6 +152,7 @@ internal class Program
     static bool HasTalkedToFred;
     static bool HasTalkedToOmar;
     static bool CleanBotUnstuck;
+    static bool CheckedDoorFirst;
 
     // inital state for the "quit" flag
     static bool shouldQuit = false;
@@ -271,6 +272,7 @@ internal class Program
         CleanBotUnstuck = false;
         HasTalkedToOmar = false;
         HasTalkedToFred = false;
+        CheckedDoorFirst = false;
     }
 
     // Parse data
@@ -1164,6 +1166,7 @@ internal class Program
 
             if (!HasTalkedToOmar)
             {
+                CheckedDoorFirst = true;
                 Print("I should probably go talk to whomever works here to find out what's going on");
                 //TODO add the dialogue option to ask about the door to the inital omar conversation.
             }
