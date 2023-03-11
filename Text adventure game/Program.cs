@@ -1033,40 +1033,68 @@ internal class Program
     }
 
     //A method for trying to combine items
-    static void CombineItems()
+    static void CombineItems(List<ItemId> itemIds)
     {
         IEnumerable<ItemId> itemsInInventory = GetItemsAtLocation(LocationId.Inventory);
-
         List<ItemId> avalibleItemsToCombine = ItemsYouCanCombine.Intersect(itemsInInventory).ToList();
+        List<ItemId> itemsToCombine = avalibleItemsToCombine.Intersect(itemIds).ToList();
 
-        switch (avalibleItemsToCombine.Count)
+        if (avalibleItemsToCombine.Count > 0)
         {
-            case 0:
-                Print("I don't have anything with me that I can combine with something else");
-                Console.ReadKey();
-                break;
+            if (itemsToCombine.Count > 0)
+            {
+                switch (itemsToCombine.Count)
+                {
+                    case 0:
+                        Print("I don't have anything with me that I can combine with something else");
+                        Console.ReadKey();
+                        break;
 
-            case 1:
-                Print($"I only have one thing, the {GetName(avalibleItemsToCombine[0])}, that I could possibly combine with something else, I need to look around more");
-                Console.ReadKey();
-                break;
+                    case 1:
+                        Print($"I only have one thing, the {GetName(itemsToCombine[0])}, that I could possibly combine with something else, I need to look around more");
+                        Console.ReadKey();
+                        break;
 
-            case 2:
-                Print($"It's a good start with these two, the {GetName(avalibleItemsToCombine[0])} and the {GetName(avalibleItemsToCombine[1])}. I just need something more");
-                Console.ReadKey();
-                break;
+                    case 2:
+                        Print($"It's a good start with these two, the {GetName(itemsToCombine[0])} and the {GetName(itemsToCombine[1])}. I just need something more");
+                        Console.ReadKey();
+                        break;
+                }
 
-            case 3:
-                Print("That's it!");
-                Console.ReadKey();
-                Print("I have combined the items into an explosive!");
-                CurrentItemLocations[ItemId.DroneBattery] = LocationId.Nowhere;
-                CurrentItemLocations[ItemId.Chlorine] = LocationId.Nowhere;
-                CurrentItemLocations[ItemId.Ice] = LocationId.Nowhere;
-                CurrentItemLocations[ItemId.MixedExplosive] = LocationId.Inventory;
-                Console.ReadKey();
-                break;
+                if (itemsToCombine.Count == 3)
+                {
+                    Print("That's it!");
+                    Console.ReadKey();
+                    Print("I have combined the items into an explosive!");
+                    CurrentItemLocations[ItemId.DroneBattery] = LocationId.Nowhere;
+                    CurrentItemLocations[ItemId.Chlorine] = LocationId.Nowhere;
+                    CurrentItemLocations[ItemId.Ice] = LocationId.Nowhere;
+                    CurrentItemLocations[ItemId.MixedExplosive] = LocationId.Inventory;
+                    Console.ReadKey();
+                    return;
+                }
+                return;
+            }
+        }
 
+        if (itemIds.Count > 0)
+        {
+            foreach (ItemId itemId in itemIds)
+            {
+                if (!itemsToCombine.Contains(itemId) && itemsInInventory.Contains(itemId))
+                {
+                    Print($"I can't think of a way to combine the {GetName(itemId)} with anything else");
+                }
+                else
+                {
+                    Print($"You don't have the {GetName(itemId)}");
+                }
+            }
+        }
+
+        if (itemIds.Count == 0)
+        {
+            Print("Combine what?");
         }
     }
 
@@ -1522,7 +1550,7 @@ internal class Program
                 break;
 
             case "combine":
-                CombineItems();
+                CombineItems(itemIds);
                 break;
 
             case "talk":
