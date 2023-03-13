@@ -1251,36 +1251,40 @@ internal class Program
 
     static void HandleEnding()
     {
+        string ending = string.Empty;
+
         if (FredDestroyed && OmarDestroyed)
         {
-            //TODO Destroy ending
+            if (CurrentItemLocations[ItemId.Hamburger] == LocationId.Inventory)
+            {
+                ending = File.ReadAllText("OmarDestroyedBurgerEnding.txt");
+            }
+            else
+            {
+                ending = File.ReadAllText("OmarDestroyedBurgerEnding.txt");
+            }
         }
 
         if (OmarRescued && !FredDestroyed)
         {
-            //TODO write a proper ending man... walla you didnt need to do him dirty like that.
-            //TODO also fix the restart the game thing, include that there are other ways to beat the game.
-            string omarSetFree1Ending = File.ReadAllText("OmarSetFree-FredLivesEnding.txt");
-            Print(omarSetFree1Ending);
-            Console.ReadKey();
-            Console.Clear();
-            Console.ForegroundColor = SystemColor;
-            Print("Press any key to start again");
-            Console.ReadKey();
-            Restart();
-            return;
-
+            ending = File.ReadAllText("OmarSetFree-FredLivesEnding.txt");
         }
 
         if (OmarRescued && FredDestroyed)
         {
-            //TODO secret ending
+            ending = File.ReadAllText("OmarSetFree-FredIsDeadEnding.txt");
         }
-        //Just for fun, this should never happen. But if it does the player is locked in the nowhere location and can restart.
-        //It's just a joke for me hahahahahaha.....
-        CurrentLocation = LocationsData[LocationId.Nowhere];
+
+        Print(ending);
+        Console.ReadKey();
+        Console.Clear();
+        Console.ForegroundColor = SystemColor;
+        Print("Press any key to start again");
+        Console.ReadKey();
+        Restart();
         return;
     }
+
     //Method for handling talking to NPC
     static void TalkTo(LocationData currentLocation)
     {
@@ -1293,7 +1297,10 @@ internal class Program
             Console.ReadKey();
             return;
         }
-        //As off now this thing only works if there is one npc, otherwise it wont work as intended. I'm to tired/stressed to figure out another way to do it.
+
+        //NOTE
+        //There is only ever one NPC in the room in the game as it is now, If for any reason you want to have multiple npcs
+        //That you can talk to in the same room, Here is where you would need the logic to let the player decide who to talk to
 
         NPCId currentTalkingNpc = avalibleNPCsToTalkTo[0];
         string currentDialogueNode = NPCsData[currentTalkingNpc].DialogueNode;
@@ -1359,6 +1366,18 @@ internal class Program
                     if (currentDialogueNode == "CleanBot.Help2")
                     {
                         NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Help2";
+                    }
+
+                    //Setting the flag to indicate that the player has talked to omar
+                    if (currentDialogueNode == "Omar.Greeting2")
+                    {
+                        HasTalkedToOmar = true;
+                    }
+
+                    //setting the flag to indicate that the player has talked to fred
+                    if (currentDialogueNode == "Fred.Greeting2")
+                    {
+                        HasTalkedToFred = true;
                     }
 
                     //TODO set if statements to check/change events

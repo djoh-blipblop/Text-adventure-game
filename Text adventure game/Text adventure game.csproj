@@ -14,6 +14,9 @@
     <None Remove="ItemData.txt" />
     <None Remove="LocationData.txt" />
     <None Remove="NpcData.txt" />
+    <None Remove="OmarDestroyedBurgerEnding.txt" />
+    <None Remove="OmarDestroyedNoBurgerEnding.txt" />
+    <None Remove="OmarSetFree-FredIsDeadEnding.txt" />
     <None Remove="OmarSetFree-FredLivesEnding.txt" />
     <None Remove="Title.txt" />
   </ItemGroup>
@@ -32,6 +35,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="NpcData.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OmarDestroyedBurgerEnding.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OmarDestroyedNoBurgerEnding.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OmarSetFree-FredIsDeadEnding.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="OmarSetFree-FredLivesEnding.txt">
