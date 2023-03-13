@@ -956,10 +956,10 @@ internal class Program
         if (CurrentLocation.Id == LocationId.CleanBotBay && CurrentNPCLocations[NPCId.CleanBot] == LocationId.CleanBotBay)
         {
             Print("You use your multi-tool to help CleanBot get his motivator unstuck");
-            //TODO Make a little Dialogue with CleanBot for helping him get unstuck.
             Console.ReadKey();
             Print("CleanBot whirrs away");
             CurrentNPCLocations[NPCId.CleanBot] = LocationId.BathRoom;
+            NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Unstuck1";
             CleanBotUnstuck = true;
             Console.ReadKey();
             Print("It left behind a small plasic cylinder of chlorine, you can probably pick that up if you want");
@@ -1348,6 +1348,18 @@ internal class Program
                 {
                     string nextDestination = npcDialogueNodes[currentDialogueNode].answers[playerReplyChoice].Destination.id;
                     currentDialogueNode = nextDestination;
+
+                    //If the player selects to not help cleanbot
+                    if (currentDialogueNode == "CleanBot.Refused1")
+                    {
+                        NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Pissed";
+                    }
+
+                    //If the player tells cleanbot that it will help him, he repeats the hint.
+                    if (currentDialogueNode == "CleanBot.Help2")
+                    {
+                        NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Help2";
+                    }
 
                     //TODO set if statements to check/change events
                     //TODO here is probably where you want to use some statements to change the current opening dialogue node

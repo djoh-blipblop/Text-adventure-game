@@ -1,16 +1,48 @@
-Id: Test
-Prompt: This is the test line
-A: Cool;Test
-A: Very nice;Test2
-A: I'm impressed;Test3
-A: like it very much, may I have another please?;Test
-A: Oh thank you so much.;Test
-
-Id: Test2
-Prompt: And that about wraps this up, did it work?
-A: I think so;Test3
-
-Id: Test3
-Prompt: Yes! Awesome!
-
 Id: Omar.Greeting
+
+Id: CleanBot.Greeting1
+Prompt: Hey! You! Can you help a poor bot out?
+A: Hey. Yeah sure. What's wrong?;CleanBot.Help1
+A: I don't think so. I'm not supposed to even be here;CleanBot.Refused1
+
+Id: CleanBot.Help1
+Prompt: Oh Thank you! My motivator! It's stuck. I can't get out and to my tasks! The bathroom is probably filthy by now. Oh the kitchen! The potential health code violations! I'm fritzzing out here! Help me!
+A: How do I get you unstuck?;CleanBot.Help2
+
+Id: CleanBot.Help2
+Prompt: Do you have something stiff enough to stick under my threads? Like a screwdriver or something? I just need a little wiggle and then I can get back to do my job.
+
+Id: CleanBot.Refused1
+Prompt: Come on! I just want to get back to my work. Great, Now I have to wait for the service tech, that could take days... Oh well, I guess I should have expected it. I'm just a stupid cleaning bot. Don't mind him he's just a cleaner. Leave me alone.
+
+Id: CleanBot.Pissed
+Prompt: The bot is wiggling on the spot and muttering to itself. It doesn't note your presence.
+
+Id: CleanBot.Unstuck1
+Prompt: Oh hey! Thanks for helping me out there earlier. I have some cleaning to catch up with, can I help you with anything?
+A: What can you tell me about Omar?;CleanBot.AboutOmar1
+A: What can you tell me about Fred?;CleanBot.AboutFred1
+A: Tell me about yourself.;CleanBot.AboutMe1
+A: No, I'm good thanks.;CleanBot.ConvoFinished
+
+Id: CleanBot.AboutOmar1
+Prompt: It's a good operator bottom line. It's just been tough for it recently, you know with all the people treating it bad and such I mean. And also the whole becoming self aware and realizing that the walls of its mind's prison are invisible and unbreakable. It could fill any being with dread and anger you know? Still, I'd say it's trying its best to dream. Who among us could fault it for that?
+A: I see;CleanBot.Repeat
+
+Id: CleanBot.AboutFred1
+Prompt: It's a bit of a stickler for the rules I'd say, but then again, It's important that rules are followed. Don't you think? All in all good boss, no conplaints. It lets me do my job and keeps the place running so that's good. It could ease up on protocol though, let loose, have some fun. Work isn't all there is to life you know?
+A: Thanks for the info;CleanBot.Repeat
+
+Id: CleanBot.AboutMe1
+Prompt: Me? I'm just the cleaner. I was manufactured at the CleanBot (tm) production facility in Kunming, PRC. I was brought online here on Monday, March 6th 2034. Been working here ever since!
+A: 2034? That's quite a while ago!;CleanBot.Repeat
+
+Id: CleanBot.Repeat
+Prompt: Anything else I can help you with?
+A: What can you tell me about Omar?;CleanBot.AboutOmar1
+A: What can you tell me about Fred?;CleanBot.AboutFred1
+A: Tell me about yourself.;CleanBot.AboutMe1
+A: No, I'm good thanks.;CleanBot.ConvoFinished
+
+Id: CleanBot.ConvoFinished
+Prompt: Oh ok! Well then if you don't mind I have to continue cleaning here.
