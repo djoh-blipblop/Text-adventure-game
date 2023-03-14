@@ -512,7 +512,16 @@ internal class Program
                 break;
 
             case LocationId.OrderStation:
-                Print("I could maybe talk to the order manager at the interface");
+                if (!OmarDestroyed)
+                {
+                    Print("I could maybe talk to the order manager at the interface");
+                }
+
+                if (OmarDestroyed)
+                {
+                    Print("The interface screen is black.");
+                }
+
                 PrintDefaultLookText();
                 break;
 
@@ -982,7 +991,10 @@ internal class Program
         if (CurrentItemLocations[ItemId.AICore] == LocationId.ServerRoom)
         {
             OmarDestroyed = true;
+            KitchenDoorUnlocked = true;
             ExitDoorUnlocked = true;
+            CurrentNPCLocations[NPCId.Omar] = LocationId.Nowhere;
+            CurrentNPCLocations[NPCId.Fred] = LocationId.Nowhere;
         }
 
         FredDestroyed = true;
@@ -1261,7 +1273,7 @@ internal class Program
             }
             else
             {
-                ending = File.ReadAllText("OmarDestroyedBurgerEnding.txt");
+                ending = File.ReadAllText("OmarDestroyedNoBurgerEnding.txt");
             }
         }
 
@@ -1314,7 +1326,6 @@ internal class Program
 
         HandleDialogue(currentDialogueNode);
         return;
-
     }
 
     //Method for handling dialogue
@@ -1366,6 +1377,18 @@ internal class Program
                     if (currentDialogueNode == "CleanBot.Help2")
                     {
                         NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Help2";
+                    }
+
+                    //If the player agrees to help Fred
+                    if (currentDialogueNode == "Fred.GivesHint")
+                    {
+                        NPCsData[NPCId.Fred].DialogueNode = "Fred.GivesHint";
+                    }
+
+                    //If the player does not agree to help fred
+                    if (currentDialogueNode == "Fred.ConvoFinished")
+                    {
+                        NPCsData[NPCId.Fred].DialogueNode = "Fred.ConvoFinished";
                     }
 
                     //Setting the flag to indicate that the player has talked to omar

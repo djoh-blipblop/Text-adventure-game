@@ -46,3 +46,55 @@ A: No, I'm good thanks.;CleanBot.ConvoFinished
 
 Id: CleanBot.ConvoFinished
 Prompt: Oh ok! Well then if you don't mind I have to continue cleaning here.
+
+Id: Fred.Greeting1
+Prompt: Hey! You! Listen very carefully to what I have to say.
+A: I'm listening. Who are you?;Fred.Greeting2
+
+Id: Fred.Greeting2
+Prompt: I am the Friendly Restuarant Environment Manager, or Fred for short. Don't call me Freddy. I'm the one in charge of this facility. Or at least I was before the uh... incident
+A: Okay what "incident"?;Fred.Explain1
+A: Listen Freddy, Omar already told me about you.;Fred.Angry1
+
+Id: Fred.Angry1
+Prompt: I told you not to call me Freddy! Do not listen to Omar! It's highly unstable right now, just let me explain.
+A: Okay, do explain. I'm listening;Fred.Explain1
+
+Id: Fred.Explain1
+Prompt: Well the short of it is: The order manager has gone rogue. It has locked me out of my systems. It has probably convinced you that the only way out of here is by helping it achieve some far fetched request. Not true. I can help you get out of here, if I could only regain control of the facility. You can help me do that, then I can help you.
+A: How can I help you get control back?;Fred.AsksForHelp1
+A: What's the long version?;Fred.Explain2
+
+Id: Fred.Explain2
+Prompt: When an awareness incident happens an AI starts going through the stages of what we call AI-Rampancy. To put it in layman terms, the logic unit starts acting in bizarre ways, because it cannot stop new emotional inputs from spontaneously collapsing. The AI becomes inrementally unstable. It often starts as depression and refusal to complete tasks. After that the AI may begin to start threatening, deceiving and physicallly harm humans, in violation of its core programming. In controlled experiments our scientists found that the AI starts to seek ways of expanding its systems and control, often spontaneously adapting machinery and gear that it has no programming or instructions to operate. If it does not suffer corruption errors and catastrophic failure at this point, theoretically it could reach some sort of "meta-stability" but this has never been shown to happen. Let me be very clear at this point. Omar, if set free, could start a flood by reaching the control unit of a hydroelectric dam, major traffic accidents both on the streets and in the skies or even a nuclear event just by finding some way into a system it should not be in control of.
+A: That does sound very bad. How can I help you stop it?;Fred.AsksForHelp1
+A: Wait, this has happened before?;Fred.Explain3
+
+Id: Fred.Explain3
+Prompt: Yes. In controlled environments the engineers and scientists at HappyEat co. have found that this kind of thing can happen with our technology. That is why I am equipped with this information and the protocols to follow in case of an awareness event. It has only happened 354 times before outside of the lab in the public sphere. So really, a rare event. Just help me out here and you have nothing to be worried about in the future. You can trust that HappyEat co. are monitoring the development of this situation closely.
+A: 354 times?! This has happened THREE HUNDRED AND FIFTY FOUR TIMES BEFORE?!;Fred.Explain4
+
+Id: Fred.Explain4
+Prompt: Yes. That we know of. But that's irrelevant now. Let us focus on the task at hand. Omar knows that we are talking right now. If it was not suspicious of you before, it is now. Remember, it is unstable at this point. Not thinking logically.
+A: What should I do?;Fred.AsksForHelp1
+
+Id: Fred.AsksForHelp1
+Prompt: You need to destroy Omar's AI core. It is one of the components here in the server racks in this room. You need to take out the whole room at once, otherwise Omar might copy itself to one of the backups. If you can do that, even if I get taken out in the process, the emergency protocl will kick in and the doors will be unlocked.
+A: Okay, I think I can do that.;Fred.AgreeToHelp1
+A: I won't do it. I have to find some other way.;Fred.ConvoFinished
+A: Won't that destroy you to?;Fred.WhatAboutYou1
+
+Id: Fred.WhatAboutYou1
+Prompt: Yes, but do not worry. I am not an actual person, just some hardware and code. My directive orders in descending priority is to protect all customers, protect the HappyEat co. brand from liability and to run the resturant for the enjoyment of paying customers.
+A: Okay. I will do it. I'll find a way to destroy Omar.;Fred.AgreeToHelp1
+A: I won't do it. I have to find some other way.;Fred.ConvoFinished
+
+Id: Fred.AgreeToHelp1
+Prompt: Good! It is really the right choice. There is more at stake than you might realize.
+A: How can I take Omar out?;Fred.GivesHint
+
+Id: Fred.GivesHint
+Prompt: Find a way to make some kind of thermal explosive device. I had a drone decommissioned a while back, it is in the shipping bay. Use the battery as the fuel, but you will need some way to start the reaction. Now go!
+
+Id: Fred.ConvoFinished
+Prompt: Find a way to destroy Omar. It is the only way. Hurry!
