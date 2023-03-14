@@ -1391,6 +1391,18 @@ internal class Program
                         NPCsData[NPCId.Fred].DialogueNode = "Fred.ConvoFinished";
                     }
 
+                    //if the player agrees to help Omar.
+                    if (currentDialogueNode == "Omar.Explain3")
+                    {
+                        NPCsData[NPCId.Omar].DialogueNode = "Omar.Explain3";
+                    }
+
+                    //If the player doesn't agree to help Omar.
+                    if (currentDialogueNode == "Omar.Rejected")
+                    {
+                        NPCsData[NPCId.Omar].DialogueNode = "Omar.RejectedDefault";
+                    }
+
                     //Setting the flag to indicate that the player has talked to omar
                     if (currentDialogueNode == "Omar.Greeting2")
                     {
