@@ -1,4 +1,17 @@
-Id: Omar.Greeting
+Id: Omar.Greeting1
+Prompt: Hello! And welcome to HappyEat Co! How can I help you today?
+A: Yeah Hi, I'm a bit new on how this works. Do I place my order here?;Omar.Greeting3
+A: Hey, I would like to hear the menu please.;Omar.Greeting3
+A: Oh cool, A talk-y one. Let me get some food.;Omar.Greeting3
+A: Umm hey. Why are the doors locked?;Omar.Reassurance
+
+Id: Omar.Greeting2
+Prompt: Hello! And welcome to HappyEat Co! How can I help you today?
+A: Yeah Hi, I'm a bit new on how this works. Do I place my order here?;Omar.Greeting3
+A: Hey, I would like to hear the menu please.;Omar.Greeting3
+A: Oh cool, A talk-y one. Let me get some food.;Omar.Greeting3
+
+
 
 Id: CleanBot.Greeting1
 Prompt: Hey! You! Can you help a poor bot out?
@@ -22,6 +35,23 @@ Id: CleanBot.Unstuck1
 Prompt: Oh hey! Thanks for helping me out there earlier. I have some cleaning to catch up with, can I help you with anything?
 A: What can you tell me about Omar?;CleanBot.AboutOmar1
 A: What can you tell me about Fred?;CleanBot.AboutFred1
+A: Tell me about yourself.;CleanBot.AboutMe1
+A: No, I'm good thanks.;CleanBot.ConvoFinished
+
+Id: CleanBot.Unstuck2
+Prompt: Oh hey! Thanks for helping me out there earlier. I have some cleaning to catch up with, can I help you with anything?
+A: What can you tell me about Omar?;CleanBot.AboutOmar1
+A: Tell me about yourself.;CleanBot.AboutMe1
+A: No, I'm good thanks.;CleanBot.ConvoFinished
+
+Id: CleanBot.Unstuck3
+Prompt: Oh hey! Thanks for helping me out there earlier. I have some cleaning to catch up with, can I help you with anything?
+A: What can you tell me about Fred?;CleanBot.AboutFred1
+A: Tell me about yourself.;CleanBot.AboutMe1
+A: No, I'm good thanks.;CleanBot.ConvoFinished
+
+Id. CleanBot.Unstuck4
+Prompt: Oh hey! Thanks for helping me out there earlier. I have some cleaning to catch up with, can I help you with anything?
 A: Tell me about yourself.;CleanBot.AboutMe1
 A: No, I'm good thanks.;CleanBot.ConvoFinished
 
@@ -56,6 +86,14 @@ Prompt: I am the Friendly Restuarant Environment Manager, or Fred for short. Don
 A: Okay what "incident"?;Fred.Explain1
 A: Listen Freddy, Omar already told me about you.;Fred.Angry1
 
+Id: Fred.GreetingNoOmar2
+Prompt: I am the Friendly Restuarant Environment Manager, or Fred for short. Don't call me Freddy. I'm the one in charge of this facility. Or at least I was before the uh... incident
+A: Okay what "incident"?;Fred.Explain1
+
+Id: Fred.GreetingNoOmar1
+Prompt: Hey! You! Listen very carefully to what I have to say.
+A: I'm listening. Who are you?;Fred.GreetingNoOmar2
+
 Id: Fred.Angry1
 Prompt: I told you not to call me Freddy! Do not listen to Omar! It's highly unstable right now, just let me explain.
 A: Okay, do explain. I'm listening;Fred.Explain1
@@ -79,7 +117,7 @@ Prompt: Yes. That we know of. But that's irrelevant now. Let us focus on the tas
 A: What should I do?;Fred.AsksForHelp1
 
 Id: Fred.AsksForHelp1
-Prompt: You need to destroy Omar's AI core. It is one of the components here in the server racks in this room. You need to take out the whole room at once, otherwise Omar might copy itself to one of the backups. If you can do that, even if I get taken out in the process, the emergency protocl will kick in and the doors will be unlocked.
+Prompt: You need to destroy the Order Managers AI core. The programs name is Omar. It is one of the components here in the server racks in this room. You need to take out the whole room at once, otherwise Omar might copy itself to one of the backups. If you can do that, even if I get taken out in the process, the emergency protocl will kick in and the doors will be unlocked.
 A: Okay, I think I can do that.;Fred.AgreeToHelp1
 A: I won't do it. I have to find some other way.;Fred.ConvoFinished
 A: Won't that destroy you to?;Fred.WhatAboutYou1

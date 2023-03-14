@@ -14,4 +14,4 @@ Omar
 Name: O.M.A.R
 Description: The order manager and recall interface is your guide trough the offerings from the menu of HappyEat co.! This smart Order manager will help you find your next favorite treat! Using HappyEat Happy Smile(tm) Facial recognition technology it can even recall what you ordered last visit and offer you personalized savings deals on items you might like!
 StartingLocation: OrderStation
-StartingDialogueNode: Omar.Greeting1
+StartingDialogueNode: Omar.Greeting2

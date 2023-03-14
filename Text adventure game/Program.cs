@@ -968,7 +968,6 @@ internal class Program
             Console.ReadKey();
             Print("CleanBot whirrs away");
             CurrentNPCLocations[NPCId.CleanBot] = LocationId.BathRoom;
-            NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Unstuck1";
             CleanBotUnstuck = true;
             Console.ReadKey();
             Print("It left behind a small plasic cylinder of chlorine, you can probably pick that up if you want");
@@ -1207,6 +1206,7 @@ internal class Program
             if (!HasTalkedToOmar)
             {
                 CheckedDoorFirst = true;
+                NPCsData[NPCId.Omar].DialogueNode = "Omar.Greeting1";
                 Print("I should probably go talk to whomever works here to find out what's going on");
                 //TODO add the dialogue option to ask about the door to the inital omar conversation.
             }
@@ -1252,6 +1252,52 @@ internal class Program
             }
         }
 
+        //Checking if the player checked the door first when entering the order station before having talked to omar
+        if (GoFromTo(LocationId.Entrance, LocationId.OrderStation) && CheckedDoorFirst)
+        {
+            if (!HasTalkedToOmar)
+            {
+                NPCsData[NPCId.Omar].DialogueNode = "Omar.Greeting1";
+            }
+        }
+        //Checking which npcs the player has talked to when entering the bathroom and cleanbot is there
+        if (GoFromTo(LocationId.EatingArea, LocationId.BathRoom) && CleanBotUnstuck)
+        {
+
+            if (!HasTalkedToOmar && !HasTalkedToFred)
+            {
+                NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Unstuck4";
+            }
+
+            if (HasTalkedToFred && !HasTalkedToOmar)
+            {
+                NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Unstuck3";
+            }
+
+            if (HasTalkedToOmar && !HasTalkedToFred)
+            {
+                NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Unstuck2";
+            }
+
+            if (HasTalkedToOmar && HasTalkedToFred)
+            {
+                NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Unstuck1";
+            }
+        }
+
+        //Checking if the player has talked to omar before being able to talk to fred. if so, offer special dialogue
+        if (GoFromTo(LocationId.Freezer, LocationId.ServerRoom) && !HasTalkedToFred || GoFromTo(LocationId.Storage, LocationId.ServerRoom) && !HasTalkedToFred)
+        {
+            if (HasTalkedToOmar)
+            {
+                NPCsData[NPCId.Fred].DialogueNode = "Fred.Greeting1";
+            }
+
+            if (!HasTalkedToOmar)
+            {
+                NPCsData[NPCId.Fred].DialogueNode = "Fred.GreetingNoOmar1";
+            }
+        }
         //If the player has unlocked the entrance, check the victory condition and display victory screen
         if (GoFromTo(LocationId.Entrance, LocationId.Exit) && ExitDoorUnlocked)
         {
@@ -1394,6 +1440,7 @@ internal class Program
                     //if the player agrees to help Omar.
                     if (currentDialogueNode == "Omar.Explain3")
                     {
+                        KitchenDoorUnlocked = true;
                         NPCsData[NPCId.Omar].DialogueNode = "Omar.Explain3";
                     }
 
@@ -1404,20 +1451,16 @@ internal class Program
                     }
 
                     //Setting the flag to indicate that the player has talked to omar
-                    if (currentDialogueNode == "Omar.Greeting2")
+                    if (currentDialogueNode == "Omar.Greeting3")
                     {
                         HasTalkedToOmar = true;
                     }
 
                     //setting the flag to indicate that the player has talked to fred
-                    if (currentDialogueNode == "Fred.Greeting2")
+                    if (currentDialogueNode == "Fred.Explain1")
                     {
                         HasTalkedToFred = true;
                     }
-
-                    //TODO set if statements to check/change events
-                    //TODO here is probably where you want to use some statements to change the current opening dialogue node
-                    //For the npcs if you reach that part of the convo.
                 }
                 else //If the player did choose a number, but it wasn't in the list or 0, repeat.
                 {
