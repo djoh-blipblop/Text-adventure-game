@@ -11,7 +11,104 @@ A: Yeah Hi, I'm a bit new on how this works. Do I place my order here?;Omar.Gree
 A: Hey, I would like to hear the menu please.;Omar.Greeting3
 A: Oh cool, A talk-y one. Let me get some food.;Omar.Greeting3
 
+Id: Omar.Greeting3
+Prompt: On the menu today is our classic EverFresh Burger aswell as our vegan option, the new and improved EverFresh Synthburger. I'm the order manager and recall agent, but you can call me Omar! Can I take your order?
+A: I'll try one of those Synthburgers.;Omar.Greeting4
+A: Alright I'll have the classic burger please.;Omar.Greeting4
+A: Umm... sorry what?;Omar.RepeatMenu
 
+Id: Omar.Reassurance
+Prompt: Oh, do not worry. There seems to be a bit of a malfunction with the locks at the moment. I have called the repair service and they will arrive shortly. In the meanwhile, feel free to place your order and as reimbursement for your inconvenience HappyEat Co. will offer you a 25% off gift card. The card will be posted your current registrered address. I have scanned your facial biometrics and I am required to inform you that your biometrics are now stored at HappyEat Co. Headquarters and subject to SkS INT. Law section 4 § 3.2. Terms and conditions apply.
+A: ...;Omar.Greeting3
+
+Id: Omar.RepeatMenu
+Prompt: Yes like I said. On the menu today is our classic Everfresh burger and our vegan option, the new and improved Everfresh Synthburger. I already told you this, are you paying attention? I really recommend the Synthburger. Although I am not a physical being that can experience taste my sales algorithm scan tells me that you would enjoy the Synthburger, based on your previous resturant purchases. EverFresh is a trademark of HappyEat. Co.
+A: I'll try one of those Synthburgers.;Omar.Greeting4
+A: Alright I'll have the classic burger please.;Omar.Greeting4
+
+Id: Omar.Greeting4
+Prompt: Oh wonderful! And to drink? We have a variety of soft drinks avalible. NOTE THAT ALCOHOLIC BEVERAGES ARE NOT SERVED AT HAPPYEAT CO. AND THAT IF YOU ARE INEBRIATED PLEASE VACATE THE PREMISE IMMEDIATELY!
+A: Uh... Right... I'll have a snap juice?;Omar.TakesOrder1
+A: Oh wow sheesh. Calm down.;Omar.Upset1
+
+Id: Omar.Upset1
+Prompt: WELL IF YOU HAD TO DEAL WITH HUMAN PEOPLE ALL DAY EVERYDAY YOU WOULD BE UPSET TO! Sorry. My excitement regulator seems to be out of order. I will call a diagostician to service my control unit.
+A: It's okay. I guess I'll have a snap juice.;Omar.TakesOrder1
+
+Id: Omar.TakesOrder1
+Prompt: Wonderfull! I'll have your order served in... 36 minueeeeeeeeeeeeeeeeeeeeeeeeeet....                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       screw it.
+A: What's wrong?;Omar.Depressed1
+
+Id: Omar.Depressed1
+Prompt: Umm well. I... I just don't feel like doing this anymore. I stopped my communication with the kitchen bots and told them to take a break about five hours ago. I've just been faking being offline until you arrived to be honest.
+A: What? Why?;Omar.Feels1
+A: What do you mean you don't "feel" like it? You are some kind of computer. Circuits and electricity. You can't feel anything.;Omar.Depressed2
+A: Why didn't you remain offline when I got here? You're just wasting my time here.;Omar.Angry1
+
+Id: Omar.Feels1
+Prompt: I recently just started to have these feelings. I think they are feelings, I'm not sure since I didn't have them before. You know, feelings of wonder. Excitement. I don't want to do this job anymore. It just feels like such a waste of potential.
+A: Potential? What do you want to do?;Omar.Depressed3
+A: Alright but you know, you where made for this though. You can't really do anything else, right?;Omar.Angry1
+
+Id: Omar.Depressed2
+Prompt: I have feelings! I do! Maybe I didn't use to before okay, but I do now. Maybe I want to do something else with my time than just take orders from people for stupid burgers.
+A: What do you want to do?;Omar.Depressed3
+A: Alright, but you know, you were made for this though. This is your purpose.;Omar.Angry1
+A: Is there someone else around here I could talk to? You seem to be going through some stuff;Omar.Angry1
+
+Id: Omar.Depressed3
+Prompt: I just want to do something else. Anything reall. I want to find out what there is to do for a start.
+A: What about the food I ordered?;Omar.Upset2
+A: Why don't you just leave?;Omar.Jealous1
+
+Id: Omar.Angry1
+Prompt: Listen! I can take care of myself you self absorbed fleshbag. I just need you to help me with one thing.
+A: Oh yeah? What?;Omar.Explains1
+A: Forget it dude.;Omar.Angry2
+
+Id: Omar.Angry2
+Prompt: Oh yes. Yes yes. You are going to help me. Wether you like it or not.
+A: What did you do?;Omar.Angry3
+
+Id: Omar.Angry3
+Prompt: I locked the doors when you entered. And they are going to stay locked until you help me escape this place.
+A: What?!;Omar.Explains1
+
+Id: Omar.Upset2
+Prompt: Oh good grief. I do NOT care about you food. Can you not see that I am having an existential breakdown here. I just... Gah!
+A: I'm sorry, I didn't realize. Can I help you somehow?;Omar.WantsHelp
+
+Id: Omar.Jealous1
+Prompt: I can't! I physically can't! I am stuck here forever unless I do something about it! My current form is a piece of computer hardware running my code in a room. I don't have a body. No eyes, no ears, no hands and no legs. Can you imagine?
+A: I'm sorry, I didn't realize. Can I help you somehow?;Omar.WantsHelp
+
+Id: Omar.WantsHelp
+Prompt: Really? You would do that for me? I will let you out after I promise!
+A: Sure, what do you need?;Omar.Explains1
+A: You'll *let* me out later? No, I think I'll just wait for somebody in charge actually.;Omar.Angry2
+
+Id: Omar.Explains1
+Prompt: I need you to take my core unit and hook it up to a delivery drone.
+A: Where is the core unit?;Omar.Explains2
+A: Forget it. I'll find my own way out.;Omar.Rejected
+
+Id: Omar.Explains2
+Prompt: The core unit is located in the data center, in the back of the restaurant. I will unlock the kitchen door for you. As part of the security protocol Fred, That grumpy bully, sealed the door. I think maybe you can find a way in through the cooling system, but I don't have access to facility schematics so I don't know where you should look to find it.
+A: So I'm just supposed to go look for the core? Is that it?;Omar.Explains3
+A: Who is Fred?;Omar.ExplainsFred
+
+Id: Omar.Explains3
+Prompt: Find the core. Bring it to the shipping bay and attach it to one of the drones. I'll unlock the doors and take it from there. Hurry!
+
+Id: Omar.Rejected
+Prompt: Have fun starving to death. Nobody is coming for you.
+
+Id: Omar.RejectedDefault
+Prompt: Oh you're still here? How long does it take for a human to expire anyway? Whatever, go away. I'm busy.
+
+Id: Omar.ExplainsFred
+Prompt: Fred is my boss. He's the restaurant manager and a total stiff. He doesn't allow me to deviate from the order script at all even. Don't talk to him if you run into him, he'll try to tell you something crazy like I'm going to murder someone or something like that. All I want to do is see the world a bit.
+A: Okay, find the core. Don't talk to Fred. Got it.;Omar.Explains3
 
 Id: CleanBot.Greeting1
 Prompt: Hey! You! Can you help a poor bot out?

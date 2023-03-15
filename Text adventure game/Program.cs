@@ -1438,10 +1438,10 @@ internal class Program
                     }
 
                     //if the player agrees to help Omar.
-                    if (currentDialogueNode == "Omar.Explain3")
+                    if (currentDialogueNode == "Omar.Explains3")
                     {
                         KitchenDoorUnlocked = true;
-                        NPCsData[NPCId.Omar].DialogueNode = "Omar.Explain3";
+                        NPCsData[NPCId.Omar].DialogueNode = "Omar.Explains3";
                     }
 
                     //If the player doesn't agree to help Omar.
