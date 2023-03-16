@@ -474,6 +474,12 @@ internal class Program
             return;
         }
 
+        if (CurrentLocation.Id == LocationId.OrderStation && (OmarDestroyed || OmarRescued))
+        {
+            Print("The screen lights up as you aproach the order station. An error message is shown on the display. Behind it to the north you see a food delivery station and some closed doors. To the West are some tables and chairs to sit down at. To the South are the entrance and exit doors.");
+            return;
+        }
+
         Print(CurrentLocation.Description);
     }
 
@@ -1027,8 +1033,15 @@ internal class Program
         ExitDoorUnlocked = true;
         KitchenDoorUnlocked = true;
         Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the doors near the entrance." +
-            "The drone hums as it briefly turns its camera towards you before turning and flying away.");
+            "The drone hums as it briefly turns its camera towards you");
+        Console.ReadKey();
+        Console.ForegroundColor = NPCColor;
+        Print("Thank you. I have done what I promised and unlocked the doors for you. I won't forget what you have done for me.");
+        Console.ReadKey();
         CurrentItemLocations[ItemId.AICore] = LocationId.Nowhere;
+        CurrentNPCLocations[NPCId.Omar] = LocationId.Nowhere;
+        Console.ForegroundColor = PlayerColor;
+        Print("When the drone flew away I heard some doors unlock. I should get the hell out of here.");
         Console.ReadKey();
         return true;
     }
