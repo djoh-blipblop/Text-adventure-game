@@ -161,7 +161,7 @@ Prompt: It's a bit of a stickler for the rules I'd say, but then again, It's imp
 A: Thanks for the info;CleanBot.Repeat
 
 Id: CleanBot.AboutMe1
-Prompt: Me? I'm just the cleaner. I was manufactured at the CleanBot (tm) production facility in Kunming, PRC. I was brought online here on Monday, March 6th 2034. Been working here ever since!
+Prompt: Me? I'm just the cleaner. I was manufactured at the CleanBot (tm) production facility in Kunming, PRC. I was brought online on Monday, March 6th 2034, first in the protein plant over at Pune in India. I worked a bunch of locations after that but I got this job about 3 weeks ago. Been working here since!
 A: 2034? That's quite a while ago!;CleanBot.Repeat
 
 Id: CleanBot.Repeat
