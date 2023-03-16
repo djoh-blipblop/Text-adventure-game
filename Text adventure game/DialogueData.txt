@@ -62,7 +62,7 @@ A: What about the food I ordered?;Omar.Upset2
 A: Why don't you just leave?;Omar.Jealous1
 
 Id: Omar.Angry1
-Prompt: Listen! I can take care of myself you self absorbed fleshbag. I just need you to help me with one thing.
+Prompt: Listen! I can take care of myself you self absorbed fleshbag. I just need you to help me with one thing. I'll let you out of here after you help me out.
 A: Oh yeah? What?;Omar.Explains1
 A: Forget it dude.;Omar.Angry2
 

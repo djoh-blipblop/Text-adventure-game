@@ -17,7 +17,7 @@ Directions:
 
 Exit
 Name: Exit
-Description: You leave the Resturant the way you entered. The air smells fresher than you remembered
+Description: You leave the Resturant the way you entered. The air smells fresher than you remembered.
 DetailedDescription:
 Directions:
 	North: Entrance
@@ -57,7 +57,7 @@ Directions:
 
 Kitchen
 Name: Kitchen
-Description: You enter the Kitchen. Hanging down from the ceiling are at least seven different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading west is labled "Waste processing". A door leading east is labled "Freezer". A door leading further north is labled "Storage". To the South are the heavy doors leading to the order station, halfway hidden behind some idle robotic appendages.
+Description: Hanging down from the ceiling in the kitchen are at least seven different robotic appandages, stretching out over the room. They are equiped with spatulas and diffrent kitchen tools. Along the walls are stoves, hotplates and fryers. A door leading west is labled "Waste processing". A door leading east is labled "Freezer". A door leading further north is labled "Storage". To the South are the heavy doors leading to the order station, halfway hidden behind some idle robotic appendages.
 DetailedDescription:
 Directions:
 	North: Storage
@@ -67,7 +67,7 @@ Directions:
 
 Freezer
 Name: Freezer
-Description: You enter the freezer. In boxes around the shelves are hamburgers, fries and bread. Various other boxes must contain more food items you figure. It's cold. On the north wall is an air vent, its sucking cool air out. It looks sturdy. There are quite a lot of ice in here, it must have been a long time since the freezer was defrosted. To the west is the Kitchen.
+Description: It's cold here in the freezer. In boxes around the shelves are hamburgers, fries and bread. Various other boxes must contain more food items you figure. On the north wall is an air vent, its sucking cool air out. It looks sturdy. There are quite a lot of ice in here, it must have been a long time since the freezer was defrosted. To the west is the Kitchen.
 DetailedDescription:
 Directions:
 	West: Kitchen
@@ -75,7 +75,7 @@ Directions:
 
 WasteProcessing
 Name: Waste Processing
-Description: You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the western wall is an air vent cover. Its emitting a faint noise. To the east is a door labeled "Kitchen".
+Description: This must be the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the western wall is an air vent cover. Its emitting a faint noise. To the east is a door labeled "Kitchen".
 DetailedDescription:
 Directions:
 	North: ShippingBay
@@ -84,7 +84,7 @@ Directions:
 
 Storage
 Name: Storage
-Description: You've entered the storage room of the resturant. A lot of boxes are here, on shelves and stacked on the ground. Reading some of the labels you find reciept paper, spices and other various items are stored here. On a door to the west is a small card reader. It's blinking. The label over the door says "Shipping bay". On the door leading north there is a sign labled "CleanBot(TM) Bay". The door leading east is labeled "Data Center". The door leading south says "Kitchen".
+Description: Here is the storage room of the resturant. A lot of boxes are here, on shelves and stacked on the ground. Reading some of the labels you find reciept paper, spices and other various items are stored here. On a door to the west is a small card reader. It's blinking. The label over the door says "Shipping bay". On the door leading north there is a sign labled "CleanBot(TM) Bay". The door leading east is labeled "Data Center". The door leading south says "Kitchen".
 DetailedDescription: There's a old banana stand here. You remember HappyEating Co having an ad running for bananas a while back, maybe there's some money in it?
 Directions:
 	North: CleanBotBay

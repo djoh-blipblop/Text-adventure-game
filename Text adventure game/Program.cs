@@ -447,30 +447,30 @@ internal class Program
         {
             if (CleanBotUnstuck && BathRoomToWasteProcessingVentUnlocked)
             {
-                Print("The bathroom is clean and neat. There is a toilet and a sink on the wall, with a mirror above the sink. There's an airvent cover laying on the ground. To the north is the eating area");
+                Print("The bathroom is clean and neat. There is a toilet and a sink on the wall, with a mirror above the sink. There's an airvent cover laying on the ground. To the north is the eating area.");
                 return;
             }
             if (!CleanBotUnstuck && BathRoomToWasteProcessingVentUnlocked)
             {
-                Print("The bathroom has not been cleaned in a while it seems, but it's not too bad. There is a toilet and a sink on the wall, with a mirror above the sink. There's an airvent cover laying on the ground. To the north is the eating area");
+                Print("The bathroom has not been cleaned in a while it seems, but it's not too bad. There is a toilet and a sink on the wall, with a mirror above the sink. There's an airvent cover laying on the ground. To the north is the eating area.");
                 return;
             }
             if (CleanBotUnstuck && !BathRoomToWasteProcessingVentUnlocked)
             {
-                Print("The bathroom is clean and neat. There is a toilet and a sink on the wall, with a mirror above the sink. To the north is the eating area");
+                Print("The bathroom is clean and neat. There is a toilet and a sink on the wall, with a mirror above the sink. To the north is the eating area.");
                 return;
             }
         }
 
         if (CurrentLocation.Id == LocationId.WasteProcessing && WasteProcessingToBathroomVentUnlocked)
         {
-            Print("You enter the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the floor next to the western wall is an air vent cover. Its emitting a faint noise. To the east is a door labeled \"Kitchen\".");
+            Print("This is the Waste processing unit of the resturant. There is a harsh smell of cleaning supplies in the room. Several heavy machine stations are littered around the room, box pressers, shredders and grinders. There is a door leading north in here. On it's side is a small card reader. On the floor next to the western wall is an air vent cover. Its emitting a faint noise. To the east is a door labeled \"Kitchen\".");
             return;
         }
 
         if (CurrentLocation.Id == LocationId.ServerRoom && FredDestroyed)
         {
-            Print("The room has been damaged by the explosion, it's hard to see things clearly trough the smoke. The air vent to the freezer is bringing in some fresh air. The server racks are damaged and the interface that was on earlier is now black, its screen cracked and broken");
+            Print("The room has been damaged by the explosion, it's hard to see things clearly trough the smoke. The air vent to the freezer is bringing in some fresh air. The server racks are damaged and the interface that was on earlier is now black, its screen cracked and broken.");
             return;
         }
 
@@ -501,12 +501,12 @@ internal class Program
             case LocationId.Entrance:
                 if (!ExitDoorUnlocked)
                 {
-                    Print("The doors out of the resturant are locked tight");
+                    Print("The doors out of the resturant are locked tight.");
                     PrintDefaultLookText();
                 }
                 else
                 {
-                    Print("The doors are unlocked now. I can leave if I want to");
+                    Print("The doors are unlocked now. I can leave if I want to.");
                     PrintDefaultLookText();
                 }
                 break;
@@ -514,7 +514,7 @@ internal class Program
             case LocationId.OrderStation:
                 if (!OmarDestroyed)
                 {
-                    Print("I could maybe talk to the order manager at the interface");
+                    Print("I could maybe talk to the order manager at the interface.");
                 }
 
                 if (OmarDestroyed)
@@ -532,17 +532,17 @@ internal class Program
             case LocationId.BathRoom:
                 if (!BathRoomToWasteProcessingVentUnlocked)
                 {
-                    Print("On the wall is a quite large air vent cover, with a faint humming noise emitting from it. The cover looks a bit loose. Maybe I can unscrew it somehow");
+                    Print("On the wall is a quite large air vent cover, with a faint humming noise emitting from it. The cover looks a bit loose. Maybe I can unscrew it somehow.");
                     Console.ReadKey();
                 }
                 if (BathRoomToWasteProcessingVentUnlocked)
                 {
-                    Print("I could climb trough the air vent I found when I unscrewed the cover");
+                    Print("I could climb trough the air vent I found when I unscrewed the cover.");
                     Console.ReadKey();
                 }
                 if (CleanBotUnstuck)
                 {
-                    Print("The cleaning robot I helped earlier is here, cleaning. I could talk to it if I want. It looks a bit busy though");
+                    Print("The cleaning robot I helped earlier is here, cleaning. I could talk to it if I want. It looks a bit busy though.");
                     Console.ReadKey();
                 }
                 else
@@ -554,12 +554,12 @@ internal class Program
             case LocationId.FoodDeliveryStation:
                 if (!KitchenDoorUnlocked)
                 {
-                    Print("The doors are locked. I can't open them. I will have to find another way past them");
+                    Print("The doors are locked. I can't open them. I will have to find another way past them.");
                     Console.ReadKey();
                 }
                 else
                 {
-                    Print("The doors are unlocked now, I can go trough");
+                    Print("The doors are unlocked now, I can go trough.");
                     PrintDefaultLookText();
                 }
                 break;
@@ -567,7 +567,7 @@ internal class Program
             case LocationId.Kitchen:
                 if (ItemAt(ItemId.Hamburger, LocationId.Kitchen))
                 {
-                    Print("There is a hamburger here that seems to be ready to serve. I could grab it with me I suppose");
+                    Print("There is a hamburger here that seems to be ready to serve. I could grab it with me I suppose.");
                     Console.ReadKey();
                 }
                 else
@@ -584,12 +584,12 @@ internal class Program
                 }
                 if (!FreezerServerRoomVentUnlocked)
                 {
-                    Print("The air vent here looks screwed in with simple screws. I could unscrew it and see whats behind it");
+                    Print("The air vent here looks screwed in with simple screws. I could unscrew it and see whats behind it.");
                     Console.ReadKey();
                 }
                 if (FreezerServerRoomVentUnlocked)
                 {
-                    Print("I could climb trough the air vent I found when I unscrewed the cover");
+                    Print("I could climb trough the air vent I found when I unscrewed the cover.");
                     Console.ReadKey();
                 }
                 else
@@ -601,22 +601,22 @@ internal class Program
             case LocationId.WasteProcessing:
                 if (!ItemAt(ItemId.KeyCard, LocationId.Inventory))
                 {
-                    Print("I could probably get through the security door if I could just find the key");
+                    Print("I could probably get through the security door if I could just find the key.");
                     Console.ReadKey();
                 }
                 if (ItemAt(ItemId.KeyCard, LocationId.Inventory))
                 {
-                    Print("With the key card I found, I can probably go through security door");
+                    Print("With the key card I found, I can probably go through security door.");
                     Console.ReadKey();
                 }
                 if (!WasteProcessingToBathroomVentUnlocked)
                 {
-                    Print("The air vent here looks screwed in with simple screws. I could unscrew it and see whats behind it");
+                    Print("The air vent here looks screwed in with simple screws. I could unscrew it and see whats behind it.");
                     Console.ReadKey();
                 }
                 if (WasteProcessingToBathroomVentUnlocked)
                 {
-                    Print("I could climb trough the air vent I found when I unscrewed the cover");
+                    Print("I could climb trough the air vent I found when I unscrewed the cover.");
                     Console.ReadKey();
                 }
                 else
@@ -632,12 +632,12 @@ internal class Program
             case LocationId.CleanBotBay:
                 if (!CleanBotUnstuck)
                 {
-                    Print("Theres a cleaning robot here. It seems to be struggling, maybe it's having problems? It looks a bit stressed. I could talk to it I guess");
+                    Print("Theres a cleaning robot here. It seems to be struggling, maybe it's having problems? It looks a bit stressed. I could talk to it I guess.");
                     Console.ReadKey();
                 }
                 if (CleanBotUnstuck && ItemAt(ItemId.Chlorine, LocationId.CleanBotBay))
                 {
-                    Print("The robot left in a hurry. It looks like it dropped something. A bottle of chlorine? I could take it with me");
+                    Print("The robot left in a hurry. It looks like it dropped something. A bottle of chlorine? I could take it with me.");
                     Console.ReadKey();
                 }
                 if (CleanBotUnstuck && !ItemAt(ItemId.Chlorine, LocationId.CleanBotBay))
@@ -651,13 +651,13 @@ internal class Program
             case LocationId.ShippingBay:
                 if (ItemAt(ItemId.DroneBattery, LocationId.ShippingBay))
                 {
-                    Print("The offline drone has its battery hatch open. I could probably take the battery if I wanted to use it for something");
+                    Print("The offline drone has its battery hatch open. I could probably take the battery if I wanted to use it for something.");
                     Console.ReadKey();
                 }
                 if (ItemAt(ItemId.AICore, LocationId.Inventory))
                 {
                     Print("The outside door to the shipping bay is open, and a active drone is hovering there in the air. Its camera is facing away from you and it's loading dock" +
-                        "is open. There are some cables there that look like they could plug into Omar's core if I wanted to help him escape");
+                        "is open. There are some cables there that look like they could plug into Omar's core if I wanted to help him escape.");
                     Console.ReadKey();
                 }
                 PrintDefaultLookText();
@@ -672,32 +672,32 @@ internal class Program
                 }
                 if (ItemAt(ItemId.AICore, LocationId.ServerRoom))
                 {
-                    Print("The one computer component that is blinking green must be Omar's core. I could get it to get him out of here");
+                    Print("The one computer component that is blinking green must be Omar's core. I could pick it up to get him out of here.");
                     Console.ReadKey();
                 }
                 if (!ItemAt(ItemId.AICore, LocationId.ServerRoom) && !FredDestroyed)
                 {
-                    Print("There is an empty space now wherer Omar's core was. I could put him back I guess if I wanted to");
+                    Print("There is an empty space now wherer Omar's core was. I could put him back I guess if I wanted to.");
                     Console.ReadKey();
                 }
                 if (ItemAt(ItemId.KeyCard, LocationId.ServerRoom))
                 {
-                    Print("There is a plastic card with a little chip laying on one of the server racks. Maybe it's some kind of access card or key? I should get it, I might need it");
+                    Print("There is a plastic card with a little chip laying on one of the server racks. Maybe it's some kind of access card or key? I should get it, I might need it.");
                     Console.ReadKey();
                 }
                 if (!ServerRoomDoorUnlocked)
                 {
-                    Print("There's a big mechanical lever on the inside of the door to open it up. Some kind of security measure? I could unseal the door by walking out that way");
+                    Print("There's a big mechanical lever on the inside of the door to open it up. Some kind of security measure? I could unseal the door by walking out that way.");
                     Console.ReadKey();
                 }
                 if (FredDestroyed)
                 {
-                    Print("The room has been demolished. Scraps of metal, buzzing wires and smoke fills the room. I should probably hold my breath aswell");
+                    Print("The room has been demolished. Scraps of metal, buzzing wires and smoke fills the room. I should probably hold my breath aswell.");
                     Console.ReadKey();
                 }
                 if (FreezerServerRoomVentUnlocked)
                 {
-                    Print("I could climb trough the air vent I found when I unscrewed the cover");
+                    Print("I could climb trough the air vent I found when I unscrewed the cover.");
                     Console.ReadKey();
                 }
                 else
@@ -708,7 +708,7 @@ internal class Program
 
             case LocationId.Nowhere:
                 PrintDefaultLookText();
-                Print("Also this is really fucked up. I really don't get how you got here. Turn around now");
+                Print("Also this is really fucked up. I really don't get how you got here. Turn around now.");
                 break;
 
         }
@@ -931,16 +931,13 @@ internal class Program
                 Console.ReadKey();
             }
         }
-        //TODO
-        //I've already used {itemName} like that
-        //Success!!!
     }
 
     static bool HandleUseMultiTool()
     {
         if (CurrentLocation.Id == LocationId.BathRoom && !BathRoomToWasteProcessingVentUnlocked)
         {
-            Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now");
             Console.ReadKey();
             BathRoomToWasteProcessingVentUnlocked = true;
             return true;
@@ -948,7 +945,7 @@ internal class Program
 
         if (CurrentLocation.Id == LocationId.WasteProcessing && !WasteProcessingToBathroomVentUnlocked)
         {
-            Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now");
             Console.ReadKey();
             WasteProcessingToBathroomVentUnlocked = true;
             return true;
@@ -956,7 +953,7 @@ internal class Program
 
         if (CurrentLocation.Id == LocationId.Freezer && !FreezerServerRoomVentUnlocked)
         {
-            Print("You unscrew the cover to the ventilation duct. You can probably climb in there now");
+            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now");
             Console.ReadKey();
             FreezerServerRoomVentUnlocked = true;
             return true;
@@ -964,7 +961,7 @@ internal class Program
 
         if (CurrentLocation.Id == LocationId.CleanBotBay && CurrentNPCLocations[NPCId.CleanBot] == LocationId.CleanBotBay)
         {
-            Print("You use your multi-tool to help CleanBot get his motivator unstuck");
+            Print("I use my multi-tool to help CleanBot get his motivator unstuck");
             Console.ReadKey();
             Print("CleanBot whirrs away");
             CurrentNPCLocations[NPCId.CleanBot] = LocationId.BathRoom;
@@ -998,7 +995,7 @@ internal class Program
 
         FredDestroyed = true;
         CurrentItemLocations[ItemId.MixedExplosive] = LocationId.Nowhere;
-        Print("You set the explosion and run out of the server room. A few moments pass before a low loud bang is heard, followed by clanking metal scraps hitting the floor");
+        Print("I set the explosion and run out of the server room. A few moments pass before a low loud bang is heard, followed by clanking metal scraps hitting the floor");
         SwitchLocation(LocationId.Storage);
         Console.ReadKey();
         return true;
@@ -1098,7 +1095,7 @@ internal class Program
                 }
                 else
                 {
-                    Print($"You don't have the {GetName(itemId)}");
+                    Print($"I don't have the {GetName(itemId)}");
                 }
             }
         }
@@ -1115,7 +1112,7 @@ internal class Program
         Console.ForegroundColor = HelpColor;
         Print("HELP");
         Print("-------------");
-        Print(@"You can try moving in a direction by entering ""go"" and the direction (NORTH, SOUTH, EAST or WEST)");
+        Print(@"You can try moving in a direction by entering ""go"" and the direction (NORTH, SOUTH, EAST or WEST), or you could try to CLIMB");
         Print("Some things you might be able to TALK to");
         Print("Try taking a closer LOOK at your surroundings if you're stuck");
         Print("You can also check out whats in your INVENTORY");
@@ -1621,7 +1618,7 @@ internal class Program
                 }
                 else
                 {
-                    Print("There isn't anything to climb into here");
+                    Print("There isn't anything to climb into or up here");
                     Console.ReadKey();
                 }
                 break;
