@@ -18,7 +18,7 @@ A: Alright I'll have the classic burger please.;Omar.Greeting4
 A: Umm... sorry what?;Omar.RepeatMenu
 
 Id: Omar.Reassurance
-Prompt: Oh, do not worry. There seems to be a bit of a malfunction with the locks at the moment. I have called the repair service and they will arrive shortly. In the meanwhile, feel free to place your order and as reimbursement for your inconvenience HappyEat Co. will offer you a 25% off gift card. The card will be posted your current registrered address. I have scanned your facial biometrics and I am required to inform you that your biometrics are now stored at HappyEat Co. Headquarters and subject to SkS INT. Law section 4 § 3.2. Terms and conditions apply.
+Prompt: Oh, do not worry. There seems to be a bit of a malfunction with the locks at the moment. I have called the repair service and they will arrive shortly. In the meanwhile, feel free to place your order and as reimbursement for your inconvenience HappyEat Co. will offer you a 25% off gift card. The card will be posted your current registrered address. I have scanned your facial biometrics and I am required to inform you that your biometrics are now stored at HappyEat Co. Headquarters and subject to SkS INT. Law section 4 paragraph 3.2. Terms and conditions apply.
 A: ...;Omar.Greeting3
 
 Id: Omar.RepeatMenu
@@ -147,7 +147,7 @@ A: What can you tell me about Fred?;CleanBot.AboutFred1
 A: Tell me about yourself.;CleanBot.AboutMe1
 A: No, I'm good thanks.;CleanBot.ConvoFinished
 
-Id. CleanBot.Unstuck4
+Id: CleanBot.Unstuck4
 Prompt: Oh hey! Thanks for helping me out there earlier. I have some cleaning to catch up with, can I help you with anything?
 A: Tell me about yourself.;CleanBot.AboutMe1
 A: No, I'm good thanks.;CleanBot.ConvoFinished
@@ -166,10 +166,7 @@ A: 2034? That's quite a while ago!;CleanBot.Repeat
 
 Id: CleanBot.Repeat
 Prompt: Anything else I can help you with?
-A: What can you tell me about Omar?;CleanBot.AboutOmar1
-A: What can you tell me about Fred?;CleanBot.AboutFred1
-A: Tell me about yourself.;CleanBot.AboutMe1
-A: No, I'm good thanks.;CleanBot.ConvoFinished
+A: No, I'll come back if I can think of anything else.;CleanBot.ConvoFinished
 
 Id: CleanBot.ConvoFinished
 Prompt: Oh ok! Well then if you don't mind I have to continue cleaning here.

@@ -826,13 +826,13 @@ internal class Program
             else
             {
                 //TODO maybe change this to not include spoilers? IDK your choice
-                Print($"You are not carrying {GetName(itemIds[0])}");
+                Print($"You are not carrying {GetName(itemIds[0])}.");
                 Console.ReadKey();
             }
         }
         else
         {
-            Print("I don't know what that is");
+            Print("I don't know what that is.");
             Console.ReadKey();
         }
     }
@@ -897,7 +897,7 @@ internal class Program
             string itemName = ItemsData[itemId].Name;
             if (CurrentItemLocations[itemId] != LocationId.Inventory)
             {
-                Print($"I don't have a {itemName}");
+                Print($"I don't have a {itemName}.");
                 Console.ReadKey();
                 continue;
             }
@@ -927,7 +927,7 @@ internal class Program
             //report failure 
             if (!useItemHandled)
             {
-                Print($"I don't know how I'm supposed to use the {itemName} right now");
+                Print($"I don't know how I'm supposed to use the {itemName} right now.");
                 Console.ReadKey();
             }
         }
@@ -937,7 +937,7 @@ internal class Program
     {
         if (CurrentLocation.Id == LocationId.BathRoom && !BathRoomToWasteProcessingVentUnlocked)
         {
-            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now");
+            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now.");
             Console.ReadKey();
             BathRoomToWasteProcessingVentUnlocked = true;
             return true;
@@ -945,7 +945,7 @@ internal class Program
 
         if (CurrentLocation.Id == LocationId.WasteProcessing && !WasteProcessingToBathroomVentUnlocked)
         {
-            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now");
+            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now.");
             Console.ReadKey();
             WasteProcessingToBathroomVentUnlocked = true;
             return true;
@@ -953,7 +953,7 @@ internal class Program
 
         if (CurrentLocation.Id == LocationId.Freezer && !FreezerServerRoomVentUnlocked)
         {
-            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now");
+            Print("I unscrew the cover to the ventilation duct. I can probably climb in there now.");
             Console.ReadKey();
             FreezerServerRoomVentUnlocked = true;
             return true;
@@ -961,13 +961,13 @@ internal class Program
 
         if (CurrentLocation.Id == LocationId.CleanBotBay && CurrentNPCLocations[NPCId.CleanBot] == LocationId.CleanBotBay)
         {
-            Print("I use my multi-tool to help CleanBot get his motivator unstuck");
+            Print("I use my multi-tool to help CleanBot get his motivator unstuck.");
             Console.ReadKey();
-            Print("CleanBot whirrs away");
+            Print("CleanBot whirrs away.");
             CurrentNPCLocations[NPCId.CleanBot] = LocationId.BathRoom;
             CleanBotUnstuck = true;
             Console.ReadKey();
-            Print("It left behind a small plasic cylinder of chlorine, you can probably pick that up if you want");
+            Print("It left behind a small plastic cylinder bottle of chlorine, you can probably pick that up if you want.");
             Console.ReadKey();
             return true;
         }
@@ -995,7 +995,7 @@ internal class Program
 
         FredDestroyed = true;
         CurrentItemLocations[ItemId.MixedExplosive] = LocationId.Nowhere;
-        Print("I set the explosion and run out of the server room. A few moments pass before a low loud bang is heard, followed by clanking metal scraps hitting the floor");
+        Print("I set the explosion and run out of the server room. A few moments pass before a low loud bang is heard, followed by clanking metal scraps hitting the floor.");
         SwitchLocation(LocationId.Storage);
         Console.ReadKey();
         return true;
@@ -1010,7 +1010,7 @@ internal class Program
             {
                 if (!FredDestroyed)
                 {
-                    Print("I installed the AI-core back where I grabbed it. It starts blinking like before");
+                    Print("I installed the AI-core back where I grabbed it. It starts blinking like before.");
                     CurrentItemLocations[ItemId.AICore] = LocationId.ServerRoom;
                     Console.ReadKey();
                     return true;
@@ -1027,7 +1027,7 @@ internal class Program
         ExitDoorUnlocked = true;
         KitchenDoorUnlocked = true;
         Print("You hook up the AI-core to the shipping drone. It briefly flickers from red to green in its display. You hear a \"CLANK\" sound coming from the doors near the entrance." +
-            "The drone hums as it briefly turns its camera towards you before turning and flying away");
+            "The drone hums as it briefly turns its camera towards you before turning and flying away.");
         CurrentItemLocations[ItemId.AICore] = LocationId.Nowhere;
         Console.ReadKey();
         return true;
@@ -1035,7 +1035,7 @@ internal class Program
 
     static bool HandleUseHamburger()
     {
-        Print("I might need this if I don't get out of here soon. Better save it for later");
+        Print("I might need this if I don't get out of here soon. Better save it for later.");
         Console.ReadKey();
         return true;
     }
@@ -1054,17 +1054,17 @@ internal class Program
                 switch (itemsToCombine.Count)
                 {
                     case 0:
-                        Print("I don't have anything with me that I can combine with something else");
+                        Print("I don't have anything with me that I can combine with something else.");
                         Console.ReadKey();
                         break;
 
                     case 1:
-                        Print($"I only have one thing, the {GetName(itemsToCombine[0])}, that I could possibly combine with something else, I need to look around more");
+                        Print($"I only have one thing, the {GetName(itemsToCombine[0])}, that I could possibly combine with something else, I need to look around more.");
                         Console.ReadKey();
                         break;
 
                     case 2:
-                        Print($"It's a good start with these two, the {GetName(itemsToCombine[0])} and the {GetName(itemsToCombine[1])}. I just need something more");
+                        Print($"It's a good start with these two, the {GetName(itemsToCombine[0])} and the {GetName(itemsToCombine[1])}. I just need something more.");
                         Console.ReadKey();
                         break;
                 }
@@ -1091,11 +1091,11 @@ internal class Program
             {
                 if (!itemsToCombine.Contains(itemId) && itemsInInventory.Contains(itemId))
                 {
-                    Print($"I can't think of a way to combine the {GetName(itemId)} with anything else");
+                    Print($"I can't think of a way to combine the {GetName(itemId)} with anything else.");
                 }
                 else
                 {
-                    Print($"I don't have the {GetName(itemId)}");
+                    Print($"I don't have the {GetName(itemId)}.");
                 }
             }
         }
@@ -1112,17 +1112,17 @@ internal class Program
         Console.ForegroundColor = HelpColor;
         Print("HELP");
         Print("-------------");
-        Print(@"You can try moving in a direction by entering ""go"" and the direction (NORTH, SOUTH, EAST or WEST), or you could try to CLIMB");
-        Print("Some things you might be able to TALK to");
-        Print("Try taking a closer LOOK at your surroundings if you're stuck");
-        Print("You can also check out whats in your INVENTORY");
-        Print("INSPECT lets you take a closer look at items in your inventory");
-        Print("GET lets you take items with you");
-        Print("USE is the command for using an item from your inventory at a location");
-        Print("You can also COMBINE items that you have in your inventory");
-        Print("QUIT lets you exit the game");
+        Print(@"You can try moving in a direction by entering ""go"" and the direction (NORTH, SOUTH, EAST or WEST), or you could try to CLIMB.");
+        Print("Some things you might be able to TALK to.");
+        Print("Try taking a closer LOOK at your surroundings if you're stuck.");
+        Print("You can also check out whats in your INVENTORY.");
+        Print("INSPECT lets you take a closer look at items in your inventory.");
+        Print("GET lets you take items with you.");
+        Print("USE is the command for using an item from your inventory at a location.");
+        Print("You can also COMBINE items that you have in your inventory.");
+        Print("QUIT lets you exit the game.");
         Print("-------------");
-        Print("Press any key to continue");
+        Print("Press any key to continue.");
     }
 
     //Method for moving between locations
@@ -1142,14 +1142,14 @@ internal class Program
         //Cases for locked doors/vents
         if (GoBetween(LocationId.Kitchen, LocationId.FoodDeliveryStation) && !KitchenDoorUnlocked)
         {
-            Print("The door is locked");
+            Print("The door is locked.");
             Console.ReadKey();
             return;
         }
 
         if (GoFromTo(LocationId.BathRoom, LocationId.WasteProcessing) && !BathRoomToWasteProcessingVentUnlocked)
         {
-            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough.");
             Console.ReadKey();
             return;
         }
@@ -1157,13 +1157,13 @@ internal class Program
         if (GoFromTo(LocationId.BathRoom, LocationId.WasteProcessing) && !WasteProcessingToBathroomVentUnlocked)
         {
             WasteProcessingToBathroomVentUnlocked = true;
-            Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room");
+            Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room.");
             Console.ReadKey();
         }
 
         if (GoFromTo(LocationId.WasteProcessing, LocationId.BathRoom) && !WasteProcessingToBathroomVentUnlocked)
         {
-            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough.");
             Console.ReadKey();
             return;
         }
@@ -1171,13 +1171,13 @@ internal class Program
         if (GoFromTo(LocationId.WasteProcessing, LocationId.BathRoom) && !BathRoomToWasteProcessingVentUnlocked)
         {
             BathRoomToWasteProcessingVentUnlocked = true;
-            Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room");
+            Print("As you reach the end of the ventilation duct, you kick out the cover. It lands on the floor of the room.");
             Console.ReadKey();
         }
 
         if (GoFromTo(LocationId.Freezer, LocationId.ServerRoom) && !FreezerServerRoomVentUnlocked)
         {
-            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough");
+            Print("The ventilation duct is underneath a metal cover. I need to remove the cover before I try to crawl trough.");
             Console.ReadKey();
             return;
         }
@@ -1192,31 +1192,31 @@ internal class Program
         if (GoFromTo(LocationId.ServerRoom, LocationId.Storage) && !ServerRoomDoorUnlocked)
         {
             ServerRoomDoorUnlocked = true;
-            Print("You find the lever to unseal the security door from inside. The door is now open and you can keep exploring");
+            Print("You find the lever to unseal the security door from inside. The door is now open and you can keep exploring.");
             Console.ReadKey();
         }
 
         if (GoFromTo(LocationId.Entrance, LocationId.Exit) && !ExitDoorUnlocked)
         {
-            Print("The entrance is locked. You try to pull at the doors as hard as you can but they won't budge a millimeter");
+            Print("The entrance is locked. You try to pull at the doors as hard as you can but they won't budge a millimeter.");
 
             if (!HasTalkedToOmar)
             {
                 CheckedDoorFirst = true;
                 NPCsData[NPCId.Omar].DialogueNode = "Omar.Greeting1";
-                Print("I should probably go talk to whomever works here to find out what's going on");
+                Print("I should probably go talk to whomever works here to find out what's going on.");
                 //TODO add the dialogue option to ask about the door to the inital omar conversation.
             }
 
             if (HasTalkedToOmar)
             {
-                Print("Omar won't unlock the doors unless I help him");
+                Print("Omar won't unlock the doors unless I help him.");
                 //TODO Expand this
             }
 
             if (HasTalkedToFred)
             {
-                Print("Fred said that Omar needs to be dealt with before he can regain control and unlock the doors as part of the safety protocol");
+                Print("Fred said that Omar needs to be dealt with before he can regain control and unlock the doors as part of the safety protocol.");
                 //TODO check this over later.
             }
             Console.ReadKey();
@@ -1239,7 +1239,7 @@ internal class Program
 
         if (GoFromTo(LocationId.Storage, LocationId.ShippingBay) || GoFromTo(LocationId.WasteProcessing, LocationId.ShippingBay) && CurrentItemLocations[ItemId.KeyCard] == LocationId.Inventory)
         {
-            Print("You hold up the key card to the reader. It emits of a short \"beep\" sound and you hear the door unlock");
+            Print("You hold up the key card to the reader. It emits of a short \"beep\" sound and you hear the door unlock.");
             Console.ReadKey();
 
             if (ItemAt(ItemId.AICore, LocationId.Inventory))
@@ -1258,7 +1258,7 @@ internal class Program
             }
         }
         //Checking which npcs the player has talked to when entering the bathroom and cleanbot is there
-        if (GoFromTo(LocationId.EatingArea, LocationId.BathRoom) && CleanBotUnstuck)
+        if (GoFromTo(LocationId.EatingArea, LocationId.BathRoom) && CleanBotUnstuck || GoFromTo(LocationId.WasteProcessing, LocationId.BathRoom) && CleanBotUnstuck)
         {
 
             if (!HasTalkedToOmar && !HasTalkedToFred)
