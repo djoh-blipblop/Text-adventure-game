@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
+#region Enums
 enum LocationId
 {
     Nowhere,
@@ -48,6 +49,8 @@ enum NPCId
     Fred,
     Omar,
 }
+#endregion 
+
 internal class Program
 {
     // UI elements, colors and textspeed etc
@@ -65,7 +68,7 @@ internal class Program
     {
         while (Console.KeyAvailable)
         {
-            Console.ReadKey(false);
+            Console.ReadKey(true);
         }
     }
 
@@ -83,6 +86,9 @@ internal class Program
         public NpcDialogueNodes? Destination;
     }
 
+    /// <summary>
+    /// Something in there
+    /// </summary>
     class LocationData
     {
         public LocationId Id;
@@ -254,6 +260,13 @@ internal class Program
         {
             CurrentNPCLocations[npcEntry.Key] = npcEntry.Value.StartingLocationId;
         }
+
+        // Set all NPCs dialogue to the starting dialogues
+        NPCsData[NPCId.Fred].DialogueNode = "Fred.Greeting1";
+
+        NPCsData[NPCId.Omar].DialogueNode = "Omar.Greeting2";
+
+        NPCsData[NPCId.CleanBot].DialogueNode = "CleanBot.Greeting1";
 
         // Set goal flags
         OmarRescued = false;
@@ -1325,22 +1338,22 @@ internal class Program
         {
             if (CurrentItemLocations[ItemId.Hamburger] == LocationId.Inventory)
             {
-                ending = File.ReadAllText("OmarDestroyedBurgerEnding.txt");
+                ending = File.ReadAllText("Ending1.txt");
             }
             else
             {
-                ending = File.ReadAllText("OmarDestroyedNoBurgerEnding.txt");
+                ending = File.ReadAllText("Ending2.txt");
             }
         }
 
         if (OmarRescued && !FredDestroyed)
         {
-            ending = File.ReadAllText("OmarSetFree-FredLivesEnding.txt");
+            ending = File.ReadAllText("Ending4.txt");
         }
 
         if (OmarRescued && FredDestroyed)
         {
-            ending = File.ReadAllText("OmarSetFree-FredIsDeadEnding.txt");
+            ending = File.ReadAllText("Ending3.txt");
         }
 
         Print(ending);
@@ -1775,8 +1788,8 @@ internal class Program
         //Gameplay loop
         while (!shouldQuit)
         {
-            ClearBuffer();
             DisplayCurrentLocation();
+            ClearBuffer();
             HandlePlayerAction();
         }
     }

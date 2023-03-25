@@ -10,14 +10,14 @@
 
   <ItemGroup>
     <None Remove="DialogueData.txt" />
+    <None Remove="Ending1.txt" />
+    <None Remove="Ending2.txt" />
+    <None Remove="Ending3.txt" />
+    <None Remove="Ending4.txt" />
     <None Remove="intro.txt" />
     <None Remove="ItemData.txt" />
     <None Remove="LocationData.txt" />
     <None Remove="NpcData.txt" />
-    <None Remove="OmarDestroyedBurgerEnding.txt" />
-    <None Remove="OmarDestroyedNoBurgerEnding.txt" />
-    <None Remove="OmarSetFree-FredIsDeadEnding.txt" />
-    <None Remove="OmarSetFree-FredLivesEnding.txt" />
     <None Remove="Title.txt" />
   </ItemGroup>
 
@@ -37,16 +37,16 @@
     <Content Include="NpcData.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="OmarDestroyedBurgerEnding.txt">
+    <Content Include="Ending1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="OmarDestroyedNoBurgerEnding.txt">
+    <Content Include="Ending2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="OmarSetFree-FredIsDeadEnding.txt">
+    <Content Include="Ending3.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="OmarSetFree-FredLivesEnding.txt">
+    <Content Include="Ending4.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Title.txt">
