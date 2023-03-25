@@ -1782,6 +1782,12 @@ internal class Program
         Console.ReadKey();
         Console.Clear();
 
+        //Display intro and help
+        string introHelp = File.ReadAllText("IntroHelp.txt");
+        Console.WriteLine(introHelp);
+        Console.ReadKey();
+        Console.Clear();
+
         // Display intro
         DisplayIntro();
 
